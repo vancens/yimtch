@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>增加配置</title>
+    {include file="public/source_head"}
+</head>
+<body>
+    <div class="layui-fluid">
+
+        <blockquote class="layui-elem-quote va-head-positon">
+                    <span class="layui-breadcrumb">
+                        <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                        <a href="{:url('configList')}">配置列表</a>
+                        <a><cite>增加配置</cite></a>
+                    </span>
+            <div class="layui-btn-group">
+                <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()">
+                    <i class="layui-icon layui-icon-refresh"></i> 刷新
+                </a>
+                <a class="layui-btn layui-btn-xs layui-btn-warm" onclick="i_back()">
+                    <i class="layui-icon layui-icon-return"></i> 返回
+                </a>
+            </div>
+        </blockquote>
+
+
+        <form class="layui-form" action="">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="10%">
+                    <col width="70%">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>值</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>名称</td>
+                    <td>
+                        <input type="text" name="name" required  lay-verify="required" class="layui-input">
+                    </td>
+                    <td>*</td>
+                </tr>
+                <tr>
+                    <td>标识</td>
+                    <td>
+                        <input type="text" name="identification" required  lay-verify="required" class="layui-input">
+                    </td>
+                    <td>*</td>
+                </tr>
+
+                <tr>
+                    <td>所属分组</td>
+                    <td>
+                        <select name="type_id" lay-verify="required" required>
+                            <option value="">请选择</option>
+                            {volist name=":model('FrameConfigType')->select()" id="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/volist}
+                        </select>
+                    </td>
+                    <td>*</td>
+                </tr>
+                <tr>
+                    <td>字段类型</td>
+                    <td>
+                        <select name="form_id" lay-verify="required" required>
+                            <option value="">请选择</option>
+                            {volist name=":model('FrameConfigForm')->select()" id="vo"}
+                            <option value="{$vo.id}">{$vo.name}</option>
+                            {/volist}
+                        </select>
+                    </td>
+                    <td>*</td>
+                </tr>
+                <tr>
+                    <td>排序</td>
+                    <td>
+                        <input type="text" name="order" value="0"  class="layui-input">
+                    </td>
+                    <td>*</td>
+                </tr>
+
+                </tbody>
+            </table>
+            <input type="hidden" name="value" value="">
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">
+                <i class="layui-icon layui-icon-release"></i> 提交
+            </button>
+
+        </form>
+    </div>
+    <!--js-->
+    {include file="public/source_bottom" /}
+
+    <script>
+        //监听提交
+        form.on('submit(formDemo)', function(d){
+            $.ajax({
+                type: "POST"
+                ,data: d.field
+                ,success: function(msg){
+                    layer.closeAll('loading');
+                    if(msg.code == 1){
+                        layer.alert(msg.msg, {icon: 1},function(index){
+                            layer.close(index);
+                            window.location.href = "{:url('ConfigList')}";
+                        });
+                    }else{
+                        layer.alert(msg.msg, {icon: 2},function(index){
+                            layer.close(index);
+                        });
+                    }
+                },error: function(){
+                    layer.closeAll('loading');
+                    layer.msg('数据提交错误');
+                },beforeSend: function(){
+                    layer.load();
+                }
+            });
+            return false;
+        });
+    </script>
+</body>
+</html>

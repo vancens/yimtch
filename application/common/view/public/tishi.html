@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>提示</title>
+    {include file="public/source_head"}
+</head>
+<body>
+
+    <!--js-->
+    {include file="public/source_bottom" /}
+    {if $code}
+    <script>
+        layer.ready(function(){
+            layer.open({
+                title: '提示'
+                ,content: "{$msg}"
+                ,icon: 1
+                ,yes:function () {
+                    window.location.href="{$url}";
+                }
+            })
+        })
+
+    </script>
+    {else}
+    <script>
+        layer.ready(function(){
+            layer.open({
+                title: '提示'
+                ,content: "{$msg}"
+                ,icon: 0
+                ,yes:function () {
+                    window.location.href="{$url}";
+                }
+            })
+        })
+
+    </script>
+    {/if}
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>自定义表单数据详情</title>
+    {include file="public/source_head"}
+</head>
+<body>
+<div class="layui-fluid">
+
+    <blockquote class="layui-elem-quote va-head-positon">
+                <span class="layui-breadcrumb">
+                    <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                    <a><cite>{$info.name}</cite></a>
+                    <a><cite>数据详情</cite></a>
+                </span>
+        <div class="layui-btn-group">
+            <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()">
+                <i class="layui-icon layui-icon-refresh"></i> 刷新
+            </a>
+            <a class="layui-btn layui-btn-xs layui-btn-warm" onclick="i_back()">
+                <i class="layui-icon layui-icon-return"></i> 返回
+            </a>
+        </div>
+    </blockquote>
+
+    <form class="layui-form">
+        <table class="layui-table" lay-filter="static">
+            <colgroup>
+                <col width="250">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>名称</th>
+                <th>值</th>
+            </tr>
+            </thead>
+            <tbody>
+            {foreach $info.fields as $k=>$value}
+            <tr>
+                <td>{$value['name']}</td>
+                <td>
+                    {$data['content'][$k][$value['field']]|default='无'}
+                </td>
+            </tr>
+            {/foreach}
+            <tr>
+                <td>数据提交时间</td>
+                <td>
+                    {$data['create_time']}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+<!--js-->
+{include file="public/source_bottom" /}
+<script>
+
+</script>
+</body>
+</html>

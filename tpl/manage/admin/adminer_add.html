@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>增加管理员</title>
+    {include file="public/source_head"}
+</head>
+<body>
+<div class="layui-fluid">
+
+    <blockquote class="layui-elem-quote va-head-positon">
+            <span class="layui-breadcrumb">
+                <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                <a href="{:url('adminerList')}">管理员列表</a>
+                <a><cite>增加管理员</cite></a>
+            </span>
+        <div class="layui-btn-group">
+            <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()">
+                <i class="layui-icon layui-icon-refresh"></i> 刷新
+            </a>
+            <a class="layui-btn layui-btn-xs layui-btn-warm" onclick="i_back()">
+                <i class="layui-icon layui-icon-return"></i> 返回
+            </a>
+        </div>
+    </blockquote>
+
+    <form class="layui-form layui-form-pane">
+        <table class="layui-table">
+            <colgroup>
+                <col width="10%">
+                <col width="70%">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>名称</th>
+                <th>值</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>昵称</td>
+                <td>
+                    <input type="text" name="nickname" required  lay-verify="required" class="layui-input">
+                </td>
+                <td>*</td>
+            </tr>
+            <tr>
+                <td>登录帐号</td>
+                <td>
+                    <input type="text" name="name" required  lay-verify="required" class="layui-input">
+                </td>
+                <td>*</td>
+            </tr>
+            <tr>
+                <td>登录密码</td>
+                <td>
+                    <input type="text" name="password" required  lay-verify="required" class="layui-input">
+                </td>
+                <td>*</td>
+            </tr>
+            <tr>
+                <td>登录安全码</td>
+                <td>
+                    <input type="text" name="safe" required  lay-verify="required" class="layui-input">
+                </td>
+                <td>*</td>
+            </tr>
+            <tr>
+                <td>分组</td>
+                <td>
+                    <select name="type" lay-verify="required">
+                        <option value=""></option>
+                        {volist name=":model('FrameAdminerType')->select()" id="vo"}
+                        <option value="{$vo.id}">{$vo.name}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td>* 不同的分组拥有不同的管理权限</td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">
+            <i class="layui-icon layui-icon-release"></i> 提交
+        </button>
+    </form>
+</div>
+<!--js-->
+{include file="public/source_bottom" /}
+{include file="public/source_bottom_ueditor" /}
+<script>
+    $(function (){
+
+        //监听提交
+        form.on('submit(formDemo)', function(d){
+            $.ajax({
+                type: "POST"
+                ,data: d.field
+                ,success: function(msg){
+                    console.log(msg)
+                    layer.closeAll('loading');
+                    if(msg.code == 1){
+                        layer.alert(msg.msg, {icon: 1},function(index){
+                            layer.close(index);
+                            window.location.href = "{:url('adminerList')}";
+                        });
+                    }else{
+                        layer.alert(msg.msg, {icon: 2},function(index){
+                            layer.close(index);
+                        });
+
+                    }
+                },error: function(){
+                    layer.closeAll('loading');
+                    layer.msg('数据提交错误');
+                },beforeSend: function(){
+                    layer.load();
+                }
+            });
+            return false;
+        });
+
+    })
+
+</script>
+</body>
+</html>

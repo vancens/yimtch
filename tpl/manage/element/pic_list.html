@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>单图列表</title>
+    {include file="public/source_head"}
+</head>
+<body>
+<div class="layui-fluid">
+
+    <blockquote class="layui-elem-quote va-head-positon">
+                <span class="layui-breadcrumb">
+                    <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                    <a><cite>单图列表</cite></a>
+                </span>
+        <div class="layui-btn-group">
+            <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()">
+                <i class="layui-icon layui-icon-refresh"></i> 刷新
+            </a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger" href="{:url('picAdd')}">
+                <i class="layui-icon layui-icon-add-1"></i> 增加单图
+            </a>
+        </div>
+    </blockquote>
+
+    <form class="layui-form">
+        <table class="layui-table layui-hide" lay-filter="static">
+            <thead>
+            <tr>
+
+                <th lay-data="{field:'id', width:50}">ID</th>
+                <th lay-data="{field:'name'}">名称</th>
+                <th lay-data="{field:'pic'}">图片</th>
+                <th lay-data="{field:'link'}">链接地址</th>
+                <th lay-data="{field:'target'}">跳转方式</th>
+                <th lay-data="{field:'size'}">图片尺寸</th>
+                <th lay-data="{field:'edit', width:150}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="data" id="vo"}
+            <tr>
+                <td>{$vo.id}</td>
+                <td>{$vo.name}</td>
+                <td><a href="{$vo.pic}" target="_blank"><img src="{$vo.pic}" alt="" height="30"></a></td>
+                <td>{$vo.link|default='无'}</td>
+                <td>
+                    {if $vo.target == "_self"}
+                    当前窗口
+                    {else}
+                    新窗口
+                    {/if}
+                </td>
+                <td>{$vo.size_info|default='无'}</td>
+                <td>
+                    <div class="layui-btn-group">
+                        <a class="layui-btn layui-btn-sm layui-btn-primary" href="{:url('picEdit',['id'=>$vo.id])}" title="修改">
+                            <i class="layui-icon">&#xe642;</i>
+                        </a>
+                        <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="deleteId('{$vo.id}')" title="删除">
+                            <i class="layui-icon">&#xe640;</i>
+                        </a>
+                    </div>
+                </td>
+
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </form>
+</div>
+<!--js-->
+{include file="public/source_bottom" /}
+<script>
+    $(function (){
+        //转换静态表格
+        table.init('static', {
+            limit: 10,
+            page:true,
+            size:'lg'
+
+        });
+    })
+    //删除
+    function deleteId(id){
+        layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+            $.ajax({
+                url :"{:url('picDelete')}",
+                type: "POST"
+                ,data: {
+                    id: id
+                }
+                ,success: function(msg){
+                    layer.closeAll('loading');
+                    if(msg.code == 1){
+                        layer.alert(msg.msg, {icon: 1},function(index){
+                            layer.close(index);
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.alert(msg.msg, {icon: 2},function(index){
+                            layer.close(index);
+                        });
+                    }
+                },error: function(){
+                    layer.closeAll('loading');
+                    layer.msg('数据提交错误');
+                },beforeSend: function(){
+                    layer.load();
+                }
+            });
+            layer.close(index);
+        });
+    }
+</script>
+</body>
+</html>

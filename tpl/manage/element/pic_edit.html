@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>修改图片</title>
+    {include file="public/source_head"}
+</head>
+<body>
+<div class="layui-fluid">
+
+    <blockquote class="layui-elem-quote va-head-positon">
+            <span class="layui-breadcrumb">
+                <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                <a><cite>修改图片</cite></a>
+            </span>
+        <div class="layui-btn-group">
+            <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()">
+                <i class="layui-icon layui-icon-refresh"></i> 刷新
+            </a>
+            <a class="layui-btn layui-btn-xs layui-btn-warm" onclick="i_back()">
+                <i class="layui-icon layui-icon-return"></i> 返回
+            </a>
+        </div>
+    </blockquote>
+
+    <form class="layui-form layui-form-pane">
+        <table class="layui-table">
+            <colgroup>
+                <col width="10%">
+                <col width="70%">
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>名称</th>
+                <th>值</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>名称</td>
+                <td>
+                    <input type="text" name="name" value="{$data.name}" required  lay-verify="required" class="layui-input">
+                </td>
+                <td>*</td>
+            </tr>
+            <tr>
+                <td>描述</td>
+                <td>
+                    <textarea name="info" class="layui-textarea">{$data.info}</textarea>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>图片</td>
+                <td>
+                    <!--源图-->
+                    <input type="text" name="pic" class="v-pic layui-input upload-input" value="{$data.pic}" required  lay-verify="required">
+                    <a class="layui-btn layui-btn-sm upimg"><i class="layui-icon layui-icon-upload"></i> 上传</a>
+                    <a class="layui-btn layui-btn-sm yulan" href="{$data.pic}" target="_blank"><i class="layui-icon layui-icon-about"></i> 预览</a>
+                </td>
+                <td>建议尺寸：{$data.size_info}</td>
+            </tr>
+            <tr>
+                <td>连接地址</td>
+                <td>
+                    <input type="text" name="link" value="{$data.link}" class="layui-input">
+                </td>
+                <td>设置图片的连接</td>
+            </tr>
+            <tr>
+                <td>跳转方式</td>
+                <td>
+                    {if $data.target == "_self"}
+                    <input type="radio" name="target" value="_self" title="当前窗口" checked>
+                    <input type="radio" name="target" value="_blank" title="新窗口">
+                    {else}
+                    <input type="radio" name="target" value="_self" title="当前窗口">
+                    <input type="radio" name="target" value="_blank" title="新窗口" checked>
+                    {/if}
+                </td>
+                <td></td>
+            </tr>
+
+            </tbody>
+        </table>
+        <input type="hidden" name="id" value="{$data.id}">
+        <button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">
+            <i class="layui-icon layui-icon-release"></i> 提交
+        </button>
+    </form>
+</div>
+<!--js-->
+{include file="public/source_bottom" /}
+{include file="public/source_bottom_ueditor" /}
+<script>
+    $(function (){
+
+        //图片上传|无缩略图
+        upload.render({
+            elem: '.upimg'
+            ,url:"{:url('Upload/uploadImg')}"
+            ,accept:"image"
+            ,acceptMime:"image/*"
+            ,exts:"{vacms:config name='file_image_ext'/}".replace(/,/g,'|')
+            ,size:"{vacms:config name='file_image_size'/}"
+            ,done: function(res, index, upload){
+                if (res.code == 1){
+                    let item = this.item;
+                    $(item).siblings('.yulan').removeClass('layui-hide').attr('href',res.msg)
+                    $(item).siblings('.v-pic').attr('value',res.msg)
+                }else{
+                    layer.alert(res.msg)
+                }
+
+            }
+        })
+
+        //监听提交
+        form.on('submit(formDemo)', function(d){
+            $.ajax({
+                type: "POST"
+                ,data: d.field
+                ,success: function(msg){
+                    console.log(msg)
+                    layer.closeAll('loading');
+                    if(msg.code == 1){
+                        layer.alert(msg.msg, {icon: 1},function(index){
+                            layer.close(index);
+                            window.location.href = "{:url('picList')}";
+                        });
+                    }else{
+                        layer.alert(msg.msg, {icon: 2},function(index){
+                            layer.close(index);
+                        });
+
+                    }
+                },error: function(){
+                    layer.closeAll('loading');
+                    layer.msg('数据提交错误');
+                },beforeSend: function(){
+                    layer.load();
+                }
+            });
+            return false;
+        });
+
+
+
+    })
+
+</script>
+</body>
+</html>

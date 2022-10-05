@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>配置列表</title>
+    {include file="public/source_head"}
+</head>
+<body>
+    <div class="layui-fluid">
+
+        <blockquote class="layui-elem-quote va-head-positon">
+                <span class="layui-breadcrumb">
+                    <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                    <a><cite>配置列表</cite></a>
+                </span>
+            <div class="layui-btn-group">
+
+                <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()">
+                    <i class="layui-icon layui-icon-refresh"></i> 刷新
+                </a>
+                <a class="layui-btn layui-btn-xs layui-btn-danger" href="{:url('configAdd')}">
+                    <i class="layui-icon layui-icon-add-1"></i> 增加配置
+                </a>
+            </div>
+        </blockquote>
+
+        <form class="layui-form">
+        <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+            <ul class="layui-tab-title">
+                {volist name='data' id='vo'}
+                <li class="{if $i == 1}layui-this{/if}">{$vo.name}</li>
+                {/volist}
+            </ul>
+
+            <div class="layui-tab-content">
+                {volist name='data' id='vo'}
+                <div class="layui-tab-item {if $i == 1}layui-show{/if}">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="400">
+                            <col>
+                            <col width="70">
+                            <col width="150">
+                            <col width="120">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>值</th>
+                            <th>排序</th>
+                            <th>标识</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach $vo.with_config as $key=>$value}
+                        <tr class="config_list_tr">
+                            <td>{$value.name}</td>
+                            <td>
+                                {switch $value.form_id}
+                                {case 1}
+                                <input class="layui-input v-value" type="text" value="{$value.value}">
+                                {/case}
+                                {case 2}
+                                <textarea name="value" class="layui-textarea v-value">{$value.value}</textarea>
+                                {/case}
+                                {case 3}
+                                {if $value.value == 1}
+                                <input type="radio" class="v-value" name="{$value.identification}" value="1" title="是" checked>
+                                <input type="radio" class="v-value" name="{$value.identification}" value="0" title="否">
+                                {else}
+                                <input type="radio" class="v-value" name="{$value.identification}" value="1" title="是">
+                                <input type="radio" class="v-value" name="{$value.identification}" value="0" title="否" checked>
+                                {/if}
+                                {/case}
+                                {case 2}
+                                <textarea name="value" class="layui-textarea v-value">{$value.value}</textarea>
+                                {/case}
+                                {/switch}
+                            </td>
+                            <td>
+                                <input class="layui-input v-order" type="text" value="{$value.order}">
+                            </td>
+                            <td>
+                                <span class="layui-badge layui-bg-gray">{$value.identification}</span>
+                            </td>
+                            <td>
+                                <div class="layui-btn-group">
+                                    <a class="layui-btn layui-btn-sm layui-btn-primary" href="{:url('configEdit',['cid'=>$value.id])}">
+                                        <i class="layui-icon">&#xe642;</i>
+                                    </a>
+                                    <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="deleteId('{$value.id}')">
+                                        <i class="layui-icon">&#xe640;</i>
+                                    </a>
+                                </div>
+                            </td>
+                            <input type="hidden" value="{$value.id}" class="v-id">
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+                {/volist}
+                <button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">
+                    <i class="layui-icon layui-icon-release"></i> 保存
+                </button>
+            </div>
+
+        </div>
+        </form>
+    </div>
+    <!--js-->
+    {include file="public/source_bottom" /}
+    <script>
+        //监听提交
+        form.on('submit(formDemo)', function(d){
+            //组装配置数据
+            let tr_arr = $('.config_list_tr');
+            let data_arr = []
+            $('.config_list_tr').each(function (i){
+                //console.log('这是第'+i+'个配置tr')
+                let id    = $(this).find('.v-id').val()
+                let value = $(this).find('.v-value').val()
+                //单选按钮值处理
+                if ($(this).find('.v-value').attr('type') == "radio"){
+                    value = $(this).find('.v-value:checked').val()
+                }
+
+                let order = $(this).find('.v-order').val()
+                data_arr.push({
+                    "id" : id,
+                    "value" : value,
+                    "order" : order
+                })
+            })
+            //console.log(tr_arr)
+            //console.log(data_arr)
+            //return false;
+            $.ajax({
+                type: "POST"
+                ,data: {
+                    v:data_arr
+                }
+                ,success: function(msg){
+                    layer.closeAll('loading');
+                    if(msg.code == 1){
+                        layer.alert(msg.msg, {icon: 1},function(index){
+                            layer.close(index);
+                            window.location.href = "{:url('ConfigList')}";
+                        });
+                    }else{
+                        layer.alert(msg.msg, {icon: 2},function(index){
+                            layer.close(index);
+                        });
+                    }
+                },error: function(){
+                    layer.closeAll('loading');
+                    layer.msg('数据提交错误');
+                },beforeSend: function(){
+                    layer.load();
+                }
+            });
+            return false;
+        });
+
+        
+        //删除
+        function deleteId(id){
+            layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+                $.ajax({
+                    url :"{:url('configDelete')}",
+                    type: "POST"
+                    ,data: {
+                        id: id,
+                        db:'config_list'
+                    }
+                    ,success: function(msg){
+                        layer.closeAll('loading'); //关闭加载层
+                        if(msg.code == 1){
+                            layer.alert(msg.msg, {icon: 1},function(index){
+                                layer.close(index);
+                                window.location.reload();
+                            });
+                        }else{
+                            layer.alert(msg.msg, {icon: 2},function(index){
+                                layer.close(index);
+                            });
+                        }
+                    },error: function(){
+                        layer.closeAll('loading');
+                        layer.msg('数据提交错误');
+                    },beforeSend: function(){
+                        layer.load();
+                    }
+                });
+                layer.close(index);
+            });
+        }
+    </script>
+</body>
+</html>

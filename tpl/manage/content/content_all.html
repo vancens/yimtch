@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>所有列表</title>
+    {include file="public/source_head"}
+</head>
+<body>
+<div class="layui-fluid">
+
+    <blockquote class="layui-elem-quote va-head-positon">
+                <span class="layui-breadcrumb">
+                    <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                    <a><cite>所有内容列表</cite></a>
+                </span>
+        <div class="layui-btn-group">
+
+            <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()">
+                <i class="layui-icon layui-icon-refresh"></i> 刷新
+            </a>
+        </div>
+    </blockquote>
+    <table class="layui-table layui-hide" lay-filter="static"  id="static">
+
+        <thead>
+        <tr>
+            <th lay-data="{field:'select', width:50,type:'checkbox'}"></th>
+            <th lay-data="{field:'id', width:100}">ID</th>
+            <th lay-data="{field:'name'}">标题</th>
+            <th lay-data="{field:'time'}">时间</th>
+            <th lay-data="{field:'column'}">栏目</th>
+            <th lay-data="{field:'edit', width:150}"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name="data" id="vo"}
+        <tr>
+            <td></td>
+            <td>{$vo.id}</td>
+            <td>{$vo.title}</td>
+            <td>{$vo.create_time|date="Y-m-d"}</td>
+            <td>{$vo.column_name}</td>
+            <td>
+                <div class="layui-btn-group">
+                    <a class="layui-btn layui-btn-sm layui-btn-primary" href="{:url('contentEdit',['id'=>$vo.id])}" title="修改">
+                        <i class="layui-icon">&#xe642;</i>
+                    </a>
+                    <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="deleteId('{$vo.id}')" title="删除">
+                        <i class="layui-icon">&#xe640;</i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div class="layui-btn-group">
+        <button type="button" onclick="deletes()" class="layui-btn layui-btn-sm">
+            <i class="layui-icon layui-icon-delete"></i> 批量删除
+        </button>
+    </div>
+
+</div>
+<!--js-->
+{include file="public/source_bottom" /}
+<script>
+    $(function (){
+        //转换静态表格
+        table.init('static', {
+            limit: 12,
+            page:true,
+            size:'lg'
+
+        });
+        let inst1 = tree.render({
+            elem: '#lefttree'  //绑定元素
+            ,data: [{
+                title: '江西' //一级菜单
+                ,children: [{
+                    title: '南昌' //二级菜单
+                    ,children: [{
+                        title: '高新区' //三级菜单
+                        //…… //以此类推，可无限层级
+                    }]
+                }]
+            },{
+                title: '陕西' //一级菜单
+                ,children: [{
+                    title: '西安' //二级菜单
+                }]
+            }]
+        });
+
+    })
+    //批量删除
+    function deletes(){
+        console.log('批量删除')
+        let checkStatus = table.checkStatus('static'); //idTest 即为基础参数 id 对应的值
+        if (checkStatus.data.length < 1){
+            layer.alert('未选择内容')
+            return;
+        }
+        let data = checkStatus.data
+        //console.log(data)
+        //console.log(data[0].id)
+        let str = []
+        for (let i=0;i<checkStatus.data.length;i++){
+            //console.log(data[i])
+            str.push(data[i].id)
+        }
+        console.log(str.join())
+        layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+            $.ajax({
+                url :"{:url('contentDeletes')}",
+                type: "POST"
+                ,data: {
+                    ids: str
+                }
+                ,success: function(msg){
+                    layer.closeAll('loading'); //关闭加载层
+                    if(msg.code == 1){
+                        layer.alert(msg.msg, {icon: 1},function(index){
+                            layer.close(index);
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.alert(msg.msg, {icon: 2},function(index){
+                            layer.close(index);
+                        });
+                    }
+                },error: function(){
+                    layer.closeAll('loading');
+                    layer.msg('数据提交错误');
+                },beforeSend: function(){
+                    layer.load();
+                }
+            });
+            layer.close(index);
+        });
+    }
+    //删除
+    function deleteId(id){
+        layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+            $.ajax({
+                url :"{:url('contentDelete')}",
+                type: "POST"
+                ,data: {
+                    id: id
+                }
+                ,success: function(msg){
+                    layer.closeAll('loading'); //关闭加载层
+                    if(msg.code == 1){
+                        layer.alert(msg.msg, {icon: 1},function(index){
+                            layer.close(index);
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.alert(msg.msg, {icon: 2},function(index){
+                            layer.close(index);
+                        });
+                    }
+                },error: function(){
+                    layer.closeAll('loading');
+                    layer.msg('数据提交错误');
+                },beforeSend: function(){
+                    layer.load();
+                }
+            });
+            layer.close(index);
+        });
+    }
+</script>
+</body>
+</html>

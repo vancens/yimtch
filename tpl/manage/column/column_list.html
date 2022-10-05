@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>栏目列表</title>
+    {include file="public/source_head"}
+    <style>
+        .v-order{
+            padding-left: 0;
+            text-align: center;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-fluid">
+
+    <blockquote class="layui-elem-quote va-head-positon">
+                <span class="layui-breadcrumb">
+                    <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                    <a><cite>栏目列表</cite></a>
+                </span>
+        <div class="layui-btn-group">
+
+            <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()">
+                <i class="layui-icon layui-icon-refresh"></i> 刷新
+            </a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger" href="{:url('columnAdd')}">
+                <i class="layui-icon layui-icon-add-1"></i> 增加栏目
+            </a>
+        </div>
+    </blockquote>
+
+    <form class="layui-form">
+        <table class="layui-table">
+            <colgroup>
+
+                <col width="70">
+                <col>
+                <col width="100">
+                <col width="70">
+                <col width="150">
+                <col width="70">
+                <col width="200">
+            </colgroup>
+            <thead>
+            <tr>
+
+                <th>ID</th>
+                <th>名称</th>
+                <th>类别</th>
+                <th>内容</th>
+
+                <th>标识</th>
+                <th>排序</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="data" id="vo"}
+            <tr class="column_list_tr {if $vo.pid == 0}tr_parent {if $vo.list_child_show == 0}tr_child_hide{/if}{/if}">
+
+                <td>{$vo.id}</td>
+                <td class="td-name" data-level="{$vo.level}">
+                    {if $vo.pid == 0}
+                        {if $vo.list_child_show == 0}
+                        <span class="layui-badge-rim" data-id="{$vo.id}" onclick="show_child(this,1)">+</span>
+                        {else}
+                        <span class="layui-badge-rim" data-id="{$vo.id}" onclick="show_child(this,0)">-</span>
+                        {/if}
+                    {/if}
+                    {if $vo.level > 0}└{/if}{:str_repeat('─',($vo.level)*2)}
+                    {if $vo.type == 1}
+                    <a href="{:url('Content/contentList',['cid'=>$vo.id])}">{$vo.name}</a>
+                    {else}
+                    {$vo.name}
+                    {/if}
+                </td>
+                <td>
+                    {if $vo.type == 1}
+                    列表
+                    {/if}
+                    {if $vo.type == 2}
+                    单页
+                    {/if}
+                    {if $vo.type == 3}
+                    外链
+                    {/if}
+                </td>
+                <td>
+                    {if $vo.type == 1}
+                    <span class="layui-badge">{$vo.with_content_count}</span>
+                    {else}
+                    -
+                    {/if}
+                </td>
+
+                <td>
+                    <span class="layui-badge layui-bg-gray">{$vo.sign}</span>
+                </td>
+                <td>
+                    <input class="layui-input v-order adadad" type="text" value="{$vo.order}">
+                </td>
+                <td>
+                    <div class="layui-btn-group">
+                        <a class="layui-btn layui-btn-sm layui-btn-primary" target="_blank" href="{$vo.url}" title="预览">
+                            <i class="iconfont iconattention"></i>
+                        </a>
+                        <a class="layui-btn layui-btn-sm layui-btn-primary" href="{:url('columnEdit',['cid'=>$vo.id])}" title="修改">
+                            <i class="layui-icon">&#xe642;</i>
+                        </a>
+                        <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="deleteId('{$vo.id}')" title="删除">
+                            <i class="layui-icon">&#xe640;</i>
+                        </a>
+                    </div>
+                </td>
+                <input type="hidden" value="{$vo.id}" class="v-id">
+                <input type="hidden" value="{$vo.sign}" class="v-sign">
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        <button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">
+            <i class="layui-icon layui-icon-release"></i> 更新排序
+        </button>
+    </form>
+</div>
+<!--js-->
+{include file="public/source_bottom" /}
+<script>
+    //子栏目的padding-left设置
+    $('.td-name').each(function (){
+        $(this).css('padding-left',($(this).attr('data-level')*40 +15) +'px')
+    })
+
+    //子栏目的显示与隐藏
+    $('.tr_child_hide').nextUntil('.tr_parent').hide()
+
+    function show_child(dom,value){
+        let id = $(dom).attr('data-id')
+        switch (value){
+            case 0:
+                //console.log('隐藏子级元素')
+                $(dom).parents('.column_list_tr').nextUntil('.tr_parent').hide()
+                $(dom).attr('onclick',"show_child(this,1)")
+                $(dom).html('+')
+                $.get("{:url('columnList')}",{id:id,list_child_show:value,at:'stretch'})
+                break;
+            case 1:
+                //console.log('显示子级元素')
+                $(dom).parents('.column_list_tr').nextUntil('.tr_parent').show()
+                $(dom).attr('onclick',"show_child(this,0)")
+                $(dom).html('-')
+                $.get("{:url('columnList')}",{id:id,list_child_show:value,at:'stretch'})
+                break;
+        }
+
+    }
+
+    //监听提交|更新排序
+    form.on('submit(formDemo)', function(d){
+        //组装栏目数据
+        let data_arr = []
+        $('.column_list_tr').each(function (i){
+            let id    = $(this).find('.v-id').val()
+            let order = $(this).find('.v-order').val()
+            let sign = $(this).find('.v-sign').val()
+            data_arr.push({
+                "id" : id,
+                "order" : order,
+                "sign":sign
+            })
+        })
+        $.ajax({
+            type: "POST"
+            ,data: {
+                v:data_arr,
+                at:'order'
+            }
+            ,success: function(msg){
+                layer.closeAll('loading');
+                if(msg.code == 1){
+                    layer.alert(msg.msg, {icon: 1},function(index){
+                        layer.close(index);
+                        window.location.href = "{:url('ColumnList')}";
+                    });
+                }else{
+                    layer.alert(msg.msg, {icon: 2},function(index){
+                        layer.close(index);
+                    });
+                }
+            },error: function(){
+                layer.closeAll('loading');
+                layer.msg('数据提交错误');
+            },beforeSend: function(){
+                layer.load();
+            }
+        });
+        return false;
+    });
+
+
+    //删除
+    function deleteId(id){
+        layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+            $.ajax({
+                url :"{:url('columnDelete')}",
+                type: "POST"
+                ,data: {
+                    id: id
+                }
+                ,success: function(msg){
+                    layer.closeAll('loading'); //关闭加载层
+                    if(msg.code == 1){
+                        layer.alert(msg.msg, {icon: 1},function(index){
+                            layer.close(index);
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.alert(msg.msg, {icon: 2},function(index){
+                            layer.close(index);
+                        });
+                    }
+                },error: function(){
+                    layer.closeAll('loading');
+                    layer.msg('数据提交错误');
+                },beforeSend: function(){
+                    layer.load();
+                }
+            });
+            layer.close(index);
+        });
+    }
+</script>
+</body>
+</html>

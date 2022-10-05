@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>{vacms:config name='site_name'/}管理登录</title>
+    {include file="public/source_head" /}
+    <script>if(self != top) top.location.href = self.location.href;</script>
+</head>
+<body id="login">
+    <div class="layui-container va-main">
+        <div class="form">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <p class="title">{vacms:config name='site_name'/} <span class="layui-badge layui-bg-blue">管理登录</span></p>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <input type="text" name="name" placeholder="用户名" required  lay-verify="required" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <input type="password" name="password" placeholder="密码" required  lay-verify="required" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        <input type="text" name="safe" placeholder="安全码" required  lay-verify="required" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-inline login-captcha">
+                        <div class="layui-row layui-col-space10">
+                            <div class="layui-col-md9">
+                                <input type="text" name="captcha" placeholder="验证码" required  lay-verify="required" class="layui-input">
+                            </div>
+                            <div class="layui-col-md3">
+                                <div class="captcha-div"><img class="captcha-img" onclick="captchaR()" src="{:captcha_src()}" alt="captcha" /></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item va-login-btn">
+                    <div class="layui-input-inline">
+                        <button class="layui-btn layui-btn-normal layui-btn-fluid" lay-submit lay-filter="login">登录</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="copyright">
+            <p>
+                <span>版权信息 {vacms:config name='site_copyright'/}</span>
+                <span>Powered by <a href="//www.vacms.com" target="_blank">vacms.com</a></span>
+            </p>
+        </div>
+
+    </div>
+    <!--script-->
+    {include file="public/source_bottom" /}
+    <script>
+        //提交
+        form.on('submit(login)', function(d){
+            $.ajax({
+                type: "POST"
+                ,data: d.field
+                ,success: function(msg){
+                    layer.closeAll('loading');
+                    if(msg.code == 1){
+                        layer.alert('登录成功', {icon: 1},function(index){
+                            layer.close(index);
+                            window.location.href = "{:url('Index/index')}";
+                        });
+                    }else{
+                        layer.alert(msg.msg, {icon: 2},function(index){
+                            captchaR();
+                            layer.close(index);
+                        });
+                    }
+                },error: function(){
+                    layer.closeAll('loading');
+                    layer.msg('数据提交错误');
+                },beforeSend: function(){
+                    layer.load();
+                }
+            });
+            return false;
+        });
+        //刷新验证码
+        function captchaR(){
+            let src = $('.captcha-img').attr('src');
+            $('.captcha-img').attr('src',src);
+        }
+    </script>
+</body>
+</html>

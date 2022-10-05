@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>权限节点列表</title>
+    {include file="public/source_head"}
+    <style>
+        .v-order{
+            padding-left: 0;
+            text-align: center;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-fluid">
+
+    <blockquote class="layui-elem-quote va-head-positon">
+                <span class="layui-breadcrumb">
+                    <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                    <a href="{:url('authTypeList')}">权限节点分组</a>
+                    <a><cite>{$type.name}</cite></a>
+                    <a><cite>权限节点列表</cite></a>
+                </span>
+        <div class="layui-btn-group">
+
+            <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()">
+                <i class="layui-icon layui-icon-refresh"></i> 刷新
+            </a>
+            <a class="layui-btn layui-btn-xs layui-btn-warm" onclick="i_back()">
+                <i class="layui-icon layui-icon-return"></i> 返回
+            </a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger" href="{:url('authAdd',['tid'=>$type.id])}">
+                <i class="layui-icon layui-icon-add-1"></i> 增加权限节点
+            </a>
+        </div>
+    </blockquote>
+
+    <form class="layui-form">
+        <table class="layui-table" lay-filter="static">
+            <colgroup>
+
+                <col width="70">
+                <col>
+                <col>
+                <col>
+                <col>
+                <col width="70">
+                <col width="150">
+            </colgroup>
+
+            <thead>
+            <tr>
+                <th lay-data="{field:'id', width:70}">ID</th>
+                <th lay-data="{field:'name'}">名称</th>
+                <th lay-data="{field:'fieldname'}">节点</th>
+                <th lay-data="{field:'type'}">类别</th>
+                <th lay-data="{field:'length'}">导航</th>
+                <th lay-data="{field:'order', width:60}">排序</th>
+                <th lay-data="{field:'edit', width:150}"></th>
+            </tr>
+
+            </thead>
+            <tbody>
+            {volist name="data" id="vo"}
+            <tr class="tr-list">
+                <td>{$vo.id}</td>
+                <td>{$vo.name}</td>
+                <td>{$vo.node}</td>
+                <td>{$vo.with_type.name}</td>
+                <td>
+                    {if $vo.is_nav == 0}
+                    <input type="checkbox" lay-skin="switch" disabled>
+                    {else}
+                    <input type="checkbox" lay-skin="switch" checked disabled>
+                    {/if}
+                </td>
+                <td>
+                    <input class="layui-input v-order adadad" type="text" value="{$vo.order}">
+                </td>
+                <td>
+                    <div class="layui-btn-group">
+                        <a class="layui-btn layui-btn-sm layui-btn-primary" href="{:url('authEdit',['id'=>$vo.id])}" title="修改">
+                            <i class="layui-icon">&#xe642;</i>
+                        </a>
+                        <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="deleteId('{$vo.id}')" title="删除">
+                            <i class="layui-icon">&#xe640;</i>
+                        </a>
+                    </div>
+                </td>
+                <input type="hidden" value="{$vo.id}" class="v-id">
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+
+        <div class="layui-btn-group">
+            <button type="button" class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">
+                <i class="layui-icon">&#xe623;</i> 更新排序
+            </button>
+
+        </div>
+    </form>
+</div>
+<!--js-->
+{include file="public/source_bottom" /}
+<script>
+    //监听提交
+    form.on('submit(formDemo)', function(d){
+        //组装栏目数据
+        let data_arr = []
+        $('.tr-list').each(function (i){
+            let id    = $(this).find('.v-id').val()
+            let order = $(this).find('.v-order').val()
+
+            data_arr.push({
+                "id" : id,
+                "order" : order
+            })
+        })
+        $.ajax({
+            type: "POST"
+            ,data: {
+                v:data_arr
+            }
+            ,success: function(msg){
+                layer.closeAll('loading');
+                if(msg.code == 1){
+                    layer.alert(msg.msg, {icon: 1},function(index){
+                        layer.close(index);
+                        location.reload()
+                    });
+                }else{
+                    layer.alert(msg.msg, {icon: 2},function(index){
+                        layer.close(index);
+                    });
+                }
+            },error: function(){
+                layer.closeAll('loading');
+                layer.msg('数据提交错误');
+            },beforeSend: function(){
+                layer.load();
+            }
+        });
+        return false;
+    });
+    //删除
+    function deleteId(id){
+        layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+            $.ajax({
+                url :"{:url('authDelete')}",
+                type: "POST"
+                ,data: {
+                    id: id
+                }
+                ,success: function(msg){
+                    layer.closeAll('loading'); //关闭加载层
+                    if(msg.code == 1){
+                        layer.alert(msg.msg, {icon: 1},function(index){
+                            layer.close(index);
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.alert(msg.msg, {icon: 2},function(index){
+                            layer.close(index);
+                        });
+                    }
+                },error: function(){
+                    layer.closeAll('loading');
+                    layer.msg('数据提交错误');
+                },beforeSend: function(){
+                    layer.load();
+                }
+            });
+            layer.close(index);
+        });
+    }
+</script>
+</body>
+</html>

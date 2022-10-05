@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>修改内容</title>
+    {include file="public/source_head"}
+    <link rel="stylesheet" href="/static/skin/manage/css/content.css">
+</head>
+<body>
+    <div class="layui-fluid">
+
+        <blockquote class="layui-elem-quote va-head-positon">
+            <span class="layui-breadcrumb">
+                <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                <a><cite>{$column.name}</cite></a>
+                <a href="{:url('contentList',['cid'=>$column.id])}">内容列表</a>
+                <a><cite>修改内容</cite></a>
+            </span>
+            <div class="layui-btn-group">
+                <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()">
+                    <i class="layui-icon layui-icon-refresh"></i> 刷新
+                </a>
+                <a class="layui-btn layui-btn-xs layui-btn-warm" onclick="i_back()">
+                    <i class="layui-icon layui-icon-return"></i> 返回
+                </a>
+            </div>
+        </blockquote>
+
+        <form class="layui-form layui-form-pane">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="10%">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>值</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>所属栏目</td>
+                    <td>
+                        <input type="text" value="{$column.name}" disabled class="layui-input">
+                    </td>
+                </tr>
+                <tr>
+                    <td>文章标题</td>
+                    <td>
+                        <input type="text" name="title" value="{$data.title}" required  lay-verify="required" class="layui-input">
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>简略标题</td>
+                    <td>
+                        <input type="text" name="title_short" value="{$data.title_short}" class="layui-input">
+                    </td>
+                </tr>
+                <tr>
+                    <td>推送属性</td>
+                    <td>
+                        {volist name=":model('CmsContentFlag')->all()" id='vo'}
+                        {if in_array($vo.id,explode(',',$data.flag))}
+                        <input type="checkbox" name="flag[]" title="{$vo.name}" value="{$vo.id}" lay-skin="primary" checked>
+                        {else}
+                        <input type="checkbox" name="flag[]" title="{$vo.name}" value="{$vo.id}" lay-skin="primary">
+                        {/if}
+                        {/volist}
+                        <input type="hidden" name="flag[]" title="" value="">
+                    </td>
+                </tr>
+                <tr>
+                    <td>缩略图</td>
+                    <td>
+                        <!--缩略图-->
+                        <input type="text" name="thumb_pic" class="v-thumb layui-input upload-input" value="{$data.thumb_pic? $data.thumb_pic:$data.pic}">
+                        <!--源图-->
+                        <input type="hidden" name="pic" class="v-pic" value="{$data.pic}">
+                        <a class="layui-btn layui-btn-sm upimg_thumb"><i class="layui-icon layui-icon-upload"></i> 上传</a>
+                        {if $data.thumb_pic}
+                        <a class="layui-btn layui-btn-sm yulan" href="{$data.thumb_pic}" target="_blank"><i class="layui-icon layui-icon-about"></i> 预览</a>
+                        {elseif $data.pic}
+                        <a class="layui-btn layui-btn-sm yulan" href="{$data.pic}" target="_blank"><i class="layui-icon layui-icon-about"></i> 预览</a>
+                        {else}
+                        <a class="layui-btn layui-btn-sm yulan layui-hide" href="{$data.thumb_pic}" target="_blank"><i class="layui-icon layui-icon-about"></i> 预览</a>
+                        {/if}
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>隐藏内容</td>
+                    <td>
+                        {if $data.is_hide == 0}
+                        <input type="radio" name="is_hide" value="1" title="是">
+                        <input type="radio" name="is_hide" value="0" title="否" checked>
+                        {else}
+                        <input type="radio" name="is_hide" value="1" title="是" checked>
+                        <input type="radio" name="is_hide" value="0" title="否">
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td>外链跳转</td>
+                    <td>
+                        {if $data.is_jump == 0}
+                        <input type="radio" name="is_jump" value="1" title="是">
+                        <input type="radio" name="is_jump" value="0" title="否" checked>
+                        {else}
+                        <input type="radio" name="is_jump" value="1" title="是" checked>
+                        <input type="radio" name="is_jump" value="0" title="否">
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td>跳转URL</td>
+                    <td>
+                        <input type="text" name="jump_link" value="{$data.jump_link}" class="layui-input">
+                    </td>
+                </tr>
+                <tr>
+                    <td>文章来源</td>
+                    <td>
+                        <input type="text" name="source" value="{$data.source}" class="layui-input">
+                    </td>
+                </tr>
+                <tr>
+                    <td>文章作者</td>
+                    <td>
+                        <input type="text" name="author" value="{$data.author}" class="layui-input">
+                    </td>
+                </tr>
+                <tr>
+                    <td>seo关键词</td>
+                    <td>
+                        <input type="text" name="seo_keywords" value="{$data.seo_keywords}" class="layui-input">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>seo描述</td>
+                    <td>
+                        <textarea name="seo_description" class="layui-textarea">{$data.seo_description}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>发布时间</td>
+                    <td>
+                        <input type="text" name="create_time" value="{$data.create_time|date='Y-m-d'}" class="layui-input" id="create_time" readonly>
+                    </td>
+                </tr>
+                <tr style="background-color: #f2f2f2">
+                    <td>附加字段</td>
+                    <td>值</td>
+                </tr>
+                {volist name=":model('CmsModelField')->where('model_id',$column.model_id)->order('order')->select()" id="vo"}
+                {switch $vo.field_type_id}
+                {case 1}
+                <!--单行文本-->
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td>
+                        <input type="text" name="{$vo.db_field_name}" value="{$fubiao[$vo.db_field_name]}" class="layui-input">
+                    </td>
+                </tr>
+                {/case}
+                {case 2}
+                <!--多行文本-->
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td>
+                        <textarea name="{$vo.db_field_name}" class="layui-textarea">{$fubiao[$vo.db_field_name]}</textarea>
+                    </td>
+                </tr>
+                {/case}
+                {case 3}
+                <!--单选按钮-->
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td>
+                        {foreach :va_expload($vo.db_field_values) as $value}
+                        {if $fubiao[$vo.db_field_name] == $value}
+                        <input type="radio" name="{$vo.db_field_name}" value="{$value}" title="{$value}" checked>
+                        {else}
+                        <input type="radio" name="{$vo.db_field_name}" value="{$value}" title="{$value}">
+                        {/if}
+                        {/foreach}
+                    </td>
+                </tr>
+                {/case}
+                {case 4}
+                <!--多选按钮-->
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td>
+                        {foreach :va_expload($vo.db_field_values) as $value}
+                        {if in_array($value,explode(',',$fubiao[$vo.db_field_name]))}
+                        <input type="checkbox" name="{$vo.db_field_name}[]" value="{$value}" title="{$value}" lay-skin="primary" checked>
+                        {else}
+                        <input type="checkbox" name="{$vo.db_field_name}[]" value="{$value}" title="{$value}" lay-skin="primary">
+                        {/if}
+                        {/foreach}
+                        <input type="hidden" name="{$vo.db_field_name}[]" value="">
+                    </td>
+                </tr>
+                {/case}
+                {case 5}
+                <!--图片上传-->
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td>
+                        <!--源图-->
+                        <input type="text" name="{$vo.db_field_name}" class="v-pic layui-input upload-input" value="{$fubiao[$vo.db_field_name]}">
+                        <a class="layui-btn layui-btn-sm upimg"><i class="layui-icon layui-icon-upload"></i> 上传</a>
+                        {if $fubiao[$vo.db_field_name]}
+                        <a class="layui-btn layui-btn-sm yulan" href="{$fubiao[$vo.db_field_name]}" target="_blank">
+                            <i class="layui-icon layui-icon-about"></i> 预览
+                        </a>
+                        {else}
+                        <a class="layui-btn layui-btn-sm yulan layui-hide" href="" target="_blank">
+                            <i class="layui-icon layui-icon-about"></i> 预览
+                        </a>
+                        {/if}
+                    </td>
+                </tr>
+                {/case}
+                {case 6}
+                <!--视频上传-->
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td>
+                        <input type="text" name="{$vo.db_field_name}" class="v-value layui-input upload-input" value="{$fubiao[$vo.db_field_name]}">
+                        <a class="layui-btn layui-btn-sm upvideo"><i class="layui-icon layui-icon-upload"></i> 上传</a>
+
+                        {if $fubiao[$vo.db_field_name]}
+                        <a class="layui-btn layui-btn-sm yulan" href="{$fubiao[$vo.db_field_name]}" target="_blank">
+                            <i class="layui-icon layui-icon-about"></i> 预览
+                        </a>
+                        {else}
+                        <a class="layui-btn layui-btn-sm yulan layui-hide" href="" target="_blank">
+                            <i class="layui-icon layui-icon-about"></i> 预览
+                        </a>
+                        {/if}
+
+                    </td>
+                </tr>
+                {/case}
+                {case 7}
+                <!--附件上传-->
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td>
+                        <input type="text" name="{$vo.db_field_name}" class="v-value layui-input upload-input" value="{$fubiao[$vo.db_field_name]}">
+                        <a class="layui-btn layui-btn-sm upfile"><i class="layui-icon layui-icon-upload"></i> 上传</a>
+                        {if $fubiao[$vo.db_field_name]}
+                        <a class="layui-btn layui-btn-sm yulan" href="{$fubiao[$vo.db_field_name]}" target="_blank">
+                            <i class="layui-icon layui-icon-about"></i> 预览
+                        </a>
+                        {else}
+                        <a class="layui-btn layui-btn-sm yulan layui-hide" href="" target="_blank">
+                            <i class="layui-icon layui-icon-about"></i> 预览
+                        </a>
+                        {/if}
+
+                    </td>
+                </tr>
+                {/case}
+                {case 8|9}
+                <!--数字-->
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td>
+                        <input type="number" name="{$vo.db_field_name}" class="layui-input" value="{$fubiao[$vo.db_field_name]}">
+                    </td>
+                </tr>
+                {/case}
+                {case 10}
+                <!--富文本编辑器-->
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td>
+                        <!-- 加载编辑器的容器 -->
+                        <script class="ueditor" id="container_{$vo.db_field_name}" name="{$vo.db_field_name}" type="text/plain">{$fubiao[$vo.db_field_name]|raw}</script>
+                    </td>
+                </tr>
+                {/case}
+                {case 11}
+                <!--多图上传-->
+                <tr>
+                    <td>{$vo.name}</td>
+                    <td>
+                        <!--源图-->
+                        <a class="layui-btn layui-btn-sm upimgs" data-name="{$vo.db_field_name}">
+                            <i class="layui-icon layui-icon-carousel"></i> 上传
+                        </a>
+
+                        <div class="layui-row layui-col-space15 viewcontent" id="{$vo.db_field_name}">
+                            {if $fubiao[$vo.db_field_name]}
+                            {foreach :explode(',',$fubiao[$vo.db_field_name]) as $value}
+                            <div class="layui-col-md2">
+                                <div class="layui-card">
+                                    <div class="layui-card-body">
+                                        <img src="{$value}">
+                                    </div>
+                                    <input type="hidden" class="layui-input litpic" name="{$vo.db_field_name}[]" value="{$value}">
+                                </div>
+                                <span onclick="deletePar(this)" class="close"><i class="layui-icon layui-icon-close-fill"></i></span>
+                            </div>
+                            {/foreach}
+                            {/if}
+                        </div>
+                        <input type="hidden" name="{$vo.db_field_name}[]" value="">
+                    </td>
+                </tr>
+                {/case}
+                {/switch}
+                {/volist}
+                </tbody>
+            </table>
+            <!--隐藏字段-->
+            <!--ID-->
+            <input type="hidden" name="id" value="{$data.id}">
+            <input type="hidden" name="db_name" value="{$column['with_model']['db_name']}">
+
+            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="formDemo">
+                <i class="layui-icon layui-icon-release"></i> 提交
+            </button>
+        </form>
+    </div>
+    <!--js-->
+    {include file="public/source_bottom" /}
+    {include file="public/source_bottom_ueditor" /}
+    <script src="/static/addons/sortable/183/Sortable.min.js"></script>
+    <script>
+        $(function (){
+            //发布时间
+            laydate.render({
+                elem: '#create_time'
+            });
+            //富文本编辑器实例化
+            $('.ueditor').each(function (i){
+                let id_value = $(this).attr('id');
+                UE.getEditor(id_value);
+            })
+
+            //多图上传 图片拖拽排序
+            $('.viewcontent').each(function (i){
+                let el = document.getElementById($(this).attr('id'));;
+                new Sortable(el, {
+                    animation: 150
+                });
+            })
+
+            //监听提交
+            form.on('submit(formDemo)', function(d){
+                $.ajax({
+                    type: "POST"
+                    ,data: d.field
+                    ,success: function(msg){
+                        console.log(msg)
+                        layer.closeAll('loading');
+                        if(msg.code == 1){
+                            layer.alert(msg.msg, {icon: 1},function(index){
+                                layer.close(index);
+                                window.location.href = "{:url('contentList',['cid'=>$column['id']])}";
+                            });
+                        }else{
+                            layer.alert(msg.msg, {icon: 2},function(index){
+                                layer.close(index);
+                            });
+
+                        }
+                    },error: function(){
+                        layer.closeAll('loading');
+                        layer.msg('数据提交错误');
+                    },beforeSend: function(){
+                        layer.load();
+                    }
+                });
+                return false;
+            });
+
+            //图片上传|缩略图
+            upload.render({
+                elem: '.upimg_thumb'
+                ,url:"{:url('Upload/uploadThumbImg')}"
+                ,accept:"image"
+                ,acceptMime:"image/*"
+                ,exts:"{vacms:config name='file_image_ext'/}".replace(/,/g,'|')
+                ,size:"{vacms:config name='file_image_size'/}"
+                ,done: function(res, index, upload){
+                    if (res.code == 1){
+                        let item = this.item;
+                        $(item).siblings('.yulan').removeClass('layui-hide').attr('href',res.t)
+                        $(item).siblings('.v-pic').attr('value',res.msg)
+                        $(item).siblings('.v-thumb').attr('value',res.t)
+                    }else{
+                        layer.alert(res.msg)
+                    }
+
+                }
+            })
+
+            //图片上传|无缩略图
+            upload.render({
+                elem: '.upimg'
+                ,url:"{:url('Upload/uploadImg')}"
+                ,accept:"image"
+                ,acceptMime:"image/*"
+                ,exts:"{vacms:config name='file_image_ext'/}".replace(/,/g,'|')
+                ,size:"{vacms:config name='file_image_size'/}"
+                ,done: function(res, index, upload){
+                    if (res.code == 1){
+                        let item = this.item;
+                        $(item).siblings('.yulan').removeClass('layui-hide').attr('href',res.msg)
+                        $(item).siblings('.v-pic').attr('value',res.msg)
+                    }else{
+                        layer.alert(res.msg)
+                    }
+
+                }
+            })
+
+            //视频上传
+            upload.render({
+                elem: '.upvideo'
+                ,url:"{:url('Upload/uploadVideo')}"
+                ,accept:"video"
+                ,acceptMime:"video/*"
+                ,exts:"{vacms:config name='file_video_ext'/}".replace(/,/g,'|')
+                ,size:"{vacms:config name='file_video_size'/}"
+                ,done: function(res, index, upload){
+                    if (res.code == 1){
+                        let item = this.item;
+                        $(item).siblings('.yulan').removeClass('layui-hide').attr('href',res.msg)
+                        $(item).siblings('.v-value').attr('value',res.msg)
+                    }else{
+                        layer.alert(res.msg)
+                    }
+
+                }
+            })
+
+            //附件上传
+            upload.render({
+                elem: '.upfile'
+                ,url:"{:url('Upload/uploadFile')}"
+                ,accept:"file"
+                ,exts:"{vacms:config name='file_ext'/}".replace(/,/g,'|')
+                ,size:"{vacms:config name='file_size'/}"
+                ,done: function(res, index, upload){
+                    if (res.code == 1){
+                        let item = this.item;
+                        $(item).siblings('.yulan').removeClass('layui-hide').attr('href',res.msg)
+                        $(item).siblings('.v-value').attr('value',res.msg)
+                    }else{
+                        layer.alert(res.msg)
+                    }
+
+                }
+            })
+
+            //多图上传
+            upload.render({
+                elem: '.upimgs'
+                ,url:"{:url('Upload/uploadImg')}"
+                ,accept:"image"
+                ,acceptMime:"image/*"
+                ,multiple:true
+                ,exts:"{vacms:config name='file_image_ext'/}".replace(/,/g,'|')
+                ,size:"{vacms:config name='file_image_size'/}"
+                ,done: function(res, index, upload){
+                    if (res.code == 1){
+                        let item = this.item;
+                        let name = $(item).attr('data-name')+'[]'
+                        // $(item).siblings('.yulan').removeClass('layui-hide').attr('href',res.msg)
+                        // $(item).siblings('.v-pic').attr('value',res.msg)
+
+                        let addDom = "<div class=\"layui-col-md2\">\n" +
+                            "            <div class=\"layui-card\">\n" +
+                            "                <div class=\"layui-card-body\">\n" +
+                            "                    <img src=\""+res.msg+"\">\n" +
+                            "                </div>\n" +
+                            "                <input type='hidden' class='layui-input litpic' name='"+name+"' value='"+res.msg+"' />\n" +
+                            "            </div>\n" +
+                            "            <span onclick='deletePar(this)' class='close'><i class=\"layui-icon layui-icon-close-fill\"></i></span>\n"+
+                            "        </div>"
+                        $(item).siblings('.viewcontent').append(addDom)
+                    }else{
+                        layer.alert(res.msg)
+                    }
+
+                }
+            })
+
+        })
+
+        /**
+         * 多图上传 删除所选元素
+         * @param t
+         */
+        function deletePar(t){
+            $(t).parent('.layui-col-md2').remove()
+        }
+
+    </script>
+</body>
+</html>

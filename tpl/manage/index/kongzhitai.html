@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>控制台</title>
+    {include file="public/source_head"}
+</head>
+<body>
+<div class="layui-fluid kongzhitai">
+
+    <blockquote class="layui-elem-quote va-head-positon">
+            <span class="layui-breadcrumb">
+                <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                <a href="{:url('Index/kongzhitai')}">控制台</a>
+            </span>
+        <div class="layui-btn-group">
+            <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()"><i
+                    class="layui-icon layui-icon-refresh"></i> 刷新</a>
+        </div>
+    </blockquote>
+
+    <div class="layui-row layui-col-space15">
+
+        <div class="layui-col-md4">
+            <div class="layui-card">
+                <div class="layui-card-header">快捷操作</div>
+                <div class="layui-card-body">
+                    <div class="layui-row layui-col-space20 va-mar-tb-5 kuaijie-data">
+                        <div class="layui-col-md4">
+                            <a href="{:url('Column/columnlist')}">
+                                <p class="text-center p-icon"><i class="layui-icon layui-icon-file"></i></p>
+                                <p class="p-name">栏目列表</p>
+                            </a>
+                        </div>
+                        <div class="layui-col-md4">
+                            <a href="{:url('Configs/configlist')}">
+                                <p class="text-center p-icon"><i class="layui-icon layui-icon-set-sm"></i></p>
+                                <p class="p-name">配置列表</p>
+                            </a>
+                        </div>
+                        <div class="layui-col-md4">
+
+                            <a href="{:url('Element/bannertypelist')}">
+                                <p class="text-center p-icon"><i class="layui-icon layui-icon-carousel"></i></p>
+                                <p class="p-name">幻灯元素</p>
+                            </a>
+                        </div>
+                        <div class="layui-col-md4">
+                            <a href="{:url('Element/piclist')}">
+                                <p class="text-center p-icon"><i class="layui-icon layui-icon-picture-fine"></i></p>
+                                <p class="p-name">单图管理</p>
+                            </a>
+                        </div>
+                        <div class="layui-col-md4">
+                            <a href="{:url('Addons/formslist')}">
+                                <p class="text-center p-icon"><i class="layui-icon layui-icon-list"></i></p>
+                                <p class="p-name">表单数据</p>
+                            </a>
+                        </div>
+                        <div class="layui-col-md4">
+                            <a href="{:url('System/cleartmp')}">
+                                <p class="text-center p-icon"><i class="layui-icon layui-icon-delete"></i></p>
+                                <p class="p-name">缓存清理</p>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <div class="layui-card">
+                <div class="layui-card-header">数据统计</div>
+                <div class="layui-card-body">
+                    <div class="layui-row layui-col-space20 va-mar-tb-5 kongzhitai-data">
+                        <div class="layui-col-md6">
+                            <section>
+                                <p class="data-title">内容</p>
+                                <p class="data-num">/</p>
+                            </section>
+                        </div>
+                        <div class="layui-col-md6">
+                            <section>
+                                <p class="data-title">栏目</p>
+                                <p class="data-num">/</p>
+                            </section>
+                        </div>
+                        <div class="layui-col-md6">
+                            <section>
+                                <p class="data-title">Tag</p>
+                                <p class="data-num">/</p>
+                            </section>
+                        </div>
+                        <div class="layui-col-md6">
+                            <section>
+                                <p class="data-title">表单</p>
+                                <p class="data-num">/</p>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <div class="layui-card">
+                <div class="layui-card-header">授权信息</div>
+                <div class="layui-card-body">
+                    <table class="layui-table" lay-skin="">
+                        <tbody>
+                        <tr>
+                            <td>域名</td>
+                            <td>{$serverInfo.HTTP_HOST}</td>
+                        </tr>
+                        <tr>
+                            <td>授权状态</td>
+                            <td>演示</td>
+                        </tr>
+                        <tr>
+                            <td>有效期</td>
+                            <td>/</td>
+                        </tr>
+                        <tr>
+                            <td>系统版本</td>
+                            <td>1.01</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md8">
+            <div class="layui-card">
+                <div class="layui-card-header">最新内容</div>
+                <div class="layui-card-body">
+                    <table class="layui-table" lay-skin="">
+                        <colgroup>
+                            <col width="70">
+                            <col>
+                            <col>
+                            <col>
+                            <col width="120">
+                        </colgroup>
+                        <thead>
+                            <tr class="bg-white">
+                                <th>序列</th>
+                                <th>标题</th>
+                                <th>类别</th>
+                                <th>时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {volist name='new' id='vo'}
+                              <tr>
+                                  <td>{$i}</td>
+                                  <td>{$vo.title}</td>
+                                  <td>{$vo.column_name}</td>
+                                  <td>{$vo.create_time|date='Y-m-d'}</td>
+                                  <td>
+                                      <div class="layui-btn-group">
+                                          <a class="layui-btn layui-btn-sm layui-btn-primary" href="{:url('Content/contentEdit',['id'=>$vo.id])}" title="修改">
+                                              <i class="layui-icon">&#xe642;</i>
+                                          </a>
+                                          <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="deleteId('{$vo.id}')" title="删除">
+                                              <i class="layui-icon">&#xe640;</i>
+                                          </a>
+                                      </div>
+                                  </td>
+                              </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <div class="layui-card">
+                <div class="layui-card-header">服务器信息</div>
+                <div class="layui-card-body">
+                    <table class="layui-table" lay-skin="">
+                        <tbody>
+                        <tr>
+                            <td>服务器</td>
+                            <td>{$serverInfo.SERVER_SOFTWARE}</td>
+                        </tr>
+                        <tr>
+                            <td>数据库</td>
+                            <td>{$sqlType} {$sqlInfo}</td>
+                        </tr>
+                        <tr>
+                            <td>php</td>
+                            <td>{$Think.PHP_VERSION}</td>
+                        </tr>
+                        <tr>
+                            <td>云通信</td>
+                            <td>未连接</td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--js-->
+{include file="public/source_bottom"}
+<script>
+    $('.layui-v').text(layui.v);
+</script>
+</body>
+</html>

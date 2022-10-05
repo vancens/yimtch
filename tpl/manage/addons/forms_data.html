@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>自定义表单数据</title>
+    {include file="public/source_head"}
+</head>
+<body>
+<div class="layui-fluid">
+
+    <blockquote class="layui-elem-quote va-head-positon">
+                <span class="layui-breadcrumb">
+                    <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                    <a><cite>自定义表单数据</cite></a>
+                </span>
+        <div class="layui-btn-group">
+            <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()">
+                <i class="layui-icon layui-icon-refresh"></i> 刷新
+            </a>
+        </div>
+    </blockquote>
+
+    <form class="layui-form">
+        <table class="layui-table layui-hide" lay-filter="static">
+            <thead>
+            <tr>
+                <th lay-data="{field:'i'}">序列</th>
+                {foreach $info.fields as $key=>$value}
+                {if ($key<8)}
+                <th lay-data="{field:'{$value.field}'}">{$value.name}</th>
+                {/if}
+                {/foreach}
+                <th lay-data="{field:'detail'}"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="data" id="vo"}
+
+            <tr>
+                <td>{$i}</td>
+                {foreach $vo.content as $k=>$value}
+                {if ($k<8)}
+                {foreach $value as $zhi}
+                <td>{$zhi|default='/'}</td>
+                {/foreach}
+                {/if}
+                {/foreach}
+                <td>
+                    <a href="{:url('manage/Addons/formsDataDetail',['id'=>$vo.id])}" class="layui-btn layui-btn-primary layui-btn-sm">详情</a>
+                </td>
+            </tr>
+
+            {/volist}
+            </tbody>
+        </table>
+    </form>
+</div>
+<!--js-->
+{include file="public/source_bottom" /}
+<script>
+    $(function (){
+        //转换静态表格
+        table.init('static', {
+            limit: 10,
+            page:true,
+            size:'lg'
+
+        });
+    })
+    //删除
+    function deleteId(id){
+        layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+            $.ajax({
+                url :"{:url('formsDelete')}",
+                type: "POST"
+                ,data: {
+                    id: id,
+                    db: 'adminer'
+                }
+                ,success: function(msg){
+                    layer.closeAll('loading'); //关闭加载层
+                    if(msg.code == 1){
+                        layer.alert(msg.msg, {icon: 1},function(index){
+                            layer.close(index);
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.alert(msg.msg, {icon: 2},function(index){
+                            layer.close(index);
+                        });
+                    }
+                },error: function(){
+                    layer.closeAll('loading');
+                    layer.msg('数据提交错误');
+                },beforeSend: function(){
+                    layer.load();
+                }
+            });
+            layer.close(index);
+        });
+    }
+</script>
+</body>
+</html>

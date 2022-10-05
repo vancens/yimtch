@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>系统更新</title>
+    {include file="public/source_head"}
+</head>
+<body>
+<div class="layui-fluid">
+    <blockquote class="layui-elem-quote va-head-positon">
+            <span class="layui-breadcrumb">
+                <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                <a href="{:url('System/SystemUpdate')}">系统更新</a>
+            </span>
+        <div class="layui-btn-group">
+            <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()"><i class="layui-icon layui-icon-refresh"></i> 刷新</a>
+        </div>
+    </blockquote>
+    <form class="layui-form layui-form-pane">
+        <table class="layui-table">
+            <colgroup>
+                <col width="10%">
+                <col width="30%">
+                <col>
+            </colgroup>
+            <tbody>
+            <tr>
+                <td>当前系统版本</td>
+                <td>
+                    {$local_versions}
+                </td>
+                <td>
+                    <button class="layui-btn layui-btn-sm" lay-submit lay-filter="check_version">检测新版本</button>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<!--新版本弹出框内容-->
+<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300; display: none" id="newVersions">
+    <p>版本号：<span class="version"></span></p>
+    <p>更新内容：<span class="content"></span></p>
+    <p>提示信息：<span class="infos"></span></p>
+</div>
+<!--js-->
+{include file="public/source_bottom"}
+<script>
+
+    //监听
+    form.on('submit(check_version)', function(data){
+        //console.log('create_index btn')
+        //let value = data.field.index
+        let index = layer.load()
+        $.get("{:url('SystemUpdate')}",{type:'check_versions'},function (ret){
+            console.log(ret)
+            let objRet = JSON.parse(ret)
+            console.log(objRet)
+            layer.close(index)
+            if (objRet.code == 0){
+                layer.alert(objRet.msg)
+            }
+            if (objRet.code == 1){
+                layer.alert(objRet.msg)
+            }
+            if (objRet.code == 2){
+                //layer.alert(objRet.msg)
+                $('.version').text(objRet.data.versions)
+                $('.content').text(objRet.data.content)
+                $('.infos').text(objRet.data.infos)
+                layer.open({
+                    type: 1
+                    ,title: '当前有新版本' //不显示标题栏
+                    ,closeBtn: false
+                    ,area: '300px;'
+                    ,shade: 0.8
+                    ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                    ,resize: false
+                    ,btn: ['升级', '取消']
+                    ,btnAlign: 'c'
+                    ,moveType: 1 //拖拽模式，0或者1
+                    ,content: $("#newVersions")
+                    ,yes:function (){
+                        layer.closeAll()
+                        layer.load()
+                        $.get("{:url('SystemUpdate')}",{
+                            type:'down_load',
+                            zip:objRet.data.zip,
+                            name:objRet.data.versions
+                        },function (ret){
+                            //console.log(ret);
+                            layer.closeAll()
+                            layer.alert(ret.msg)
+                        })
+                    }
+                });
+            }
+            //layer.msg(ret.msg)
+        })
+        return false;
+    });
+    form.on('submit(clear_log)', function(data){
+        //console.log('create_index btn')
+        //let value = data.field.index
+        let index = layer.load()
+        $.get("{:url('clearTmp')}",{type:'log'},function (ret){
+            console.log(ret)
+            layer.close(index)
+            layer.msg(ret.msg)
+        })
+        return false;
+    });
+</script>
+</body>
+</html>

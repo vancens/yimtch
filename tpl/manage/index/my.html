@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <title>我的资料</title>
+    {include file="public/source_head"}
+</head>
+<body>
+    <div class="layui-fluid">
+        <blockquote class="layui-elem-quote va-head-positon">
+                <span class="layui-breadcrumb">
+                    <a><i class="layui-icon layui-icon-home"></i> 当前位置</a>
+                    <a href="{:url('Index/my')}">我的资料</a>
+                </span>
+            <div class="layui-btn-group">
+                <a class="layui-btn layui-btn-xs layui-btn-normal" onclick="i_reload()"><i class="layui-icon layui-icon-refresh"></i> 刷新</a>
+            </div>
+        </blockquote>
+        <table class="layui-table">
+            <colgroup>
+                <col width="200">
+                <col>
+            </colgroup>
+            <tbody>
+            <tr>
+                <td>昵称</td>
+                <td>{$data.nickname}</td>
+            </tr>
+            <tr>
+                <td>登录帐号</td>
+                <td>{$data.name}</td>
+            </tr>
+            <tr>
+                <td>登录密码</td>
+                <td>{$data.password}</td>
+            </tr>
+            <tr>
+                <td>安全码</td>
+                <td>{$data.safe}</td>
+            </tr>
+            <tr>
+                <td>建立时间</td>
+                <td>{$data.create_time|default='/'}</td>
+            </tr>
+            <tr>
+                <td>管理分组</td>
+                <td>{$data.with_type.name}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--js-->
+    {include file="public/source_bottom"}
+</body>
+</html>
