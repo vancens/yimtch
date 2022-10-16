@@ -12,13 +12,13 @@
 return [
 
     // 服务器地址
-    'hostname'        => 'sdm723421251.my3w.com',
+    'hostname'        => '',
     // 数据库名
-    'database'        => 'sdm723421251_db',
+    'database'        => '',
     // 用户名
-    'username'        => 'sdm723421251',
+    'username'        => '',
     // 密码
-    'password'        => 'd4bZToqJQs02Dmmksql',
+    'password'        => '',
 
 
     // 数据库类型
