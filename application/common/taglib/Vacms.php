@@ -82,7 +82,7 @@ class Vacms extends TagLib
             //顶级栏目
             case 'top':
                 $parse = '<?php ';
-                $parse .= '$__data__ = Db::name("column_list")->field("id,sign,name,name_en,url")->where("pid","0")->where("is_hide",0)->order("order")->select();';
+                $parse .= '$__data__ = Db::name("cms_column_list")->field("id,sign,name,name_en,url")->where("pid","0")->where("is_hide",0)->order("order")->select();';
                 $parse .= ' ?>';
                 $parse .= '{volist name="__data__" id="vo"}';
                 $parse .= $content;
@@ -119,7 +119,7 @@ class Vacms extends TagLib
             //单一栏目
             case 'one':
                 $parse = '<?php ';
-                $parse .= '$vo = Db::name("column_list")->field("id,name,name_en,info,litpic,content,url,sign")->where("id","'.$tag['id'].'")->find();';
+                $parse .= '$vo = Db::name("cms_column_list")->field("id,name,name_en,info,litpic,content,url,sign")->where("id","'.$tag['id'].'")->find();';
                 $parse .= ' ?>';
                 $parse .= $content;
                 break;
@@ -205,12 +205,12 @@ class Vacms extends TagLib
         }
         switch ($tag['type']){
             case 'next':
-                $parse .= '$__data__ = model("content_list")->getNext(\''.$tag['title'].'\',\''.$tag['info'].'\');';
+                $parse .= '$__data__ = model("cms_content_list")->getNext(\''.$tag['title'].'\',\''.$tag['info'].'\');';
                 $parse .= ' echo "$__data__";';
                 $parse .= ' ?>';
                 break;
             case 'pre':
-                $parse .= '$__data__ = model("content_list")->getPre(\''.$tag['title'].'\',\''.$tag['info'].'\');';
+                $parse .= '$__data__ = model("cms_content_list")->getPre(\''.$tag['title'].'\',\''.$tag['info'].'\');';
                 $parse .= ' echo "$__data__";';
                 $parse .= ' ?>';
                 break;
@@ -270,7 +270,7 @@ EOF;
             $tag['pagesize'] = 10;
         }
         $parse = '<?php ';
-        $parse .= '$__data__ = model("column_list")->getContentPage('.$tag['pagesize'].');';
+        $parse .= '$__data__ = model("cms_column_list")->getContentPage('.$tag['pagesize'].');';
         $parse .= ' echo "$__data__";';
         $parse .= ' ?>';
         return $parse;
@@ -354,7 +354,7 @@ EOF;
      */
     public function tagColumnbody($tag){
         $parse = '<?php ';
-        $parse .= ' $datatag = Db::name("column_list")->where("id","'.$tag['id'].'")->value("content");';
+        $parse .= ' $datatag = Db::name("cms_column_list")->where("id","'.$tag['id'].'")->value("content");';
         $parse .= ' echo "$datatag";';
         $parse .= ' ?>';
         return $parse;
@@ -370,7 +370,7 @@ EOF;
      */
     public function tagTdk($tag,$content){
         $parse = '<?php ';
-        $parse .= ' $tdk = Db::name("column_list")->where("id","'.$tag['id'].'")->field("seo_title,seo_keywords,seo_description")->find();';
+        $parse .= ' $tdk = Db::name("cms_column_list")->where("id","'.$tag['id'].'")->field("seo_title,seo_keywords,seo_description")->find();';
         $parse .= ' ?>';
         $parse .= $content;
         return $parse;

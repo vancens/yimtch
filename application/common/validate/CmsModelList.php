@@ -15,8 +15,8 @@ use think\Validate;
 class CmsModelList extends Validate
 {
     protected $rule = [
-        'name'              =>  'unique:model_list',
-        'db_name'           =>  'alphaNum|unique:model_list',
+        'name'              =>  'unique:cms_model_list',
+        'db_name'           =>  'alphaNum|unique:cms_model_list',
     ];
 
     protected $message  =   [

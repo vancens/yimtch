@@ -15,7 +15,7 @@ use think\Validate;
 class FrameAdminerType extends Validate
 {
     protected $rule = [
-        'name'              =>  'unique:adminer_type',
+        'name'              =>  'unique:frame_adminer_type',
     ];
 
     protected $message  =   [

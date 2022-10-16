@@ -15,7 +15,7 @@ use think\Validate;
 class CmsElementBannerType extends Validate
 {
     protected $rule = [
-        'name'              =>  'unique:element_banner_type',
+        'name'              =>  'unique:cms_element_banner_type',
     ];
 
     protected $message  =   [

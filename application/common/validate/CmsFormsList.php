@@ -15,7 +15,7 @@ use think\Validate;
 class CmsFormsList extends Validate
 {
     protected $rule = [
-        'name'              =>  'unique:forms_list'
+        'name'              =>  'unique:cms_forms_list'
     ];
 
     protected $message  =   [
