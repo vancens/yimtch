@@ -7,7 +7,6 @@
  * Time: 20:53
  */
 return [
-    'site_name'          =>  'VAPHP-FRAME',
-    'site_domain'        =>  'www.vancens.com',
-    'site_copyright'     =>  '网诚信息科技'
+    /* 虚拟主机模式，部署在虚拟主机的环境中，需要开启此参数；否则会出现把上传的图片放到网站根目录内，而不是public文件夹内 */
+    'is_virtual_mode'           => true
 ];

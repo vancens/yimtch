@@ -75,25 +75,25 @@
                         <div class="layui-col-md6">
                             <section>
                                 <p class="data-title">内容</p>
-                                <p class="data-num">/</p>
+                                <p class="data-num">{$countnum.content}</p>
                             </section>
                         </div>
                         <div class="layui-col-md6">
                             <section>
                                 <p class="data-title">栏目</p>
-                                <p class="data-num">/</p>
+                                <p class="data-num">{$countnum.column}</p>
                             </section>
                         </div>
                         <div class="layui-col-md6">
                             <section>
                                 <p class="data-title">Tag</p>
-                                <p class="data-num">/</p>
+                                <p class="data-num">{$countnum.tag}</p>
                             </section>
                         </div>
                         <div class="layui-col-md6">
                             <section>
                                 <p class="data-title">表单</p>
-                                <p class="data-num">/</p>
+                                <p class="data-num">{$countnum.forms}</p>
                             </section>
                         </div>
                     </div>
@@ -105,6 +105,10 @@
                 <div class="layui-card-header">授权信息</div>
                 <div class="layui-card-body">
                     <table class="layui-table" lay-skin="">
+                        <colgroup>
+                            <col width="35%">
+                            <col>
+                        </colgroup>
                         <tbody>
                         <tr>
                             <td>域名</td>
@@ -112,7 +116,7 @@
                         </tr>
                         <tr>
                             <td>授权状态</td>
-                            <td>演示</td>
+                            <td><i class="layui-icon layui-icon-ok-circle"></i> </td>
                         </tr>
                         <tr>
                             <td>有效期</td>
@@ -120,7 +124,7 @@
                         </tr>
                         <tr>
                             <td>系统版本</td>
-                            <td>1.01</td>
+                            <td>{$systemV}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -143,32 +147,32 @@
                             <col width="120">
                         </colgroup>
                         <thead>
-                            <tr class="bg-white">
-                                <th>序列</th>
-                                <th>标题</th>
-                                <th>类别</th>
-                                <th>时间</th>
-                                <th>操作</th>
-                            </tr>
+                        <tr class="bg-white">
+                            <th>序列</th>
+                            <th>标题</th>
+                            <th>类别</th>
+                            <th>时间</th>
+                            <th>操作</th>
+                        </tr>
                         </thead>
                         <tbody>
                         {volist name='new' id='vo'}
-                              <tr>
-                                  <td>{$i}</td>
-                                  <td>{$vo.title}</td>
-                                  <td>{$vo.column_name}</td>
-                                  <td>{$vo.create_time|date='Y-m-d'}</td>
-                                  <td>
-                                      <div class="layui-btn-group">
-                                          <a class="layui-btn layui-btn-sm layui-btn-primary" href="{:url('Content/contentEdit',['id'=>$vo.id])}" title="修改">
-                                              <i class="layui-icon">&#xe642;</i>
-                                          </a>
-                                          <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="deleteId('{$vo.id}')" title="删除">
-                                              <i class="layui-icon">&#xe640;</i>
-                                          </a>
-                                      </div>
-                                  </td>
-                              </tr>
+                        <tr>
+                            <td>{$i}</td>
+                            <td>{$vo.title}</td>
+                            <td>{$vo.column_name}</td>
+                            <td>{$vo.create_time|date='Y-m-d'}</td>
+                            <td>
+                                <div class="layui-btn-group">
+                                    <a class="layui-btn layui-btn-sm layui-btn-primary" href="{:url('Content/contentEdit',['id'=>$vo.id])}" title="修改">
+                                        <i class="layui-icon">&#xe642;</i>
+                                    </a>
+                                    <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="deleteId('{$vo.id}')" title="删除">
+                                        <i class="layui-icon">&#xe640;</i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
                         {/volist}
                         </tbody>
                     </table>
@@ -180,6 +184,10 @@
                 <div class="layui-card-header">服务器信息</div>
                 <div class="layui-card-body">
                     <table class="layui-table" lay-skin="">
+                        <colgroup>
+                            <col width="35%">
+                            <col>
+                        </colgroup>
                         <tbody>
                         <tr>
                             <td>服务器</td>
@@ -195,7 +203,7 @@
                         </tr>
                         <tr>
                             <td>云通信</td>
-                            <td>未连接</td>
+                            <td><i class="layui-icon layui-icon-ok-circle"></i></td>
                         </tr>
 
                         </tbody>

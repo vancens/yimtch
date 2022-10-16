@@ -66,7 +66,15 @@ class Index extends Base
         $countNum['tag'] = Db::name('cms_tag_list')->count();
         $countNum['forms'] = Db::name('cms_forms_list')->count();
 
+        //系统版本
+        $localVersions = '1.0.0';
+        $path = Env::get('root_path').'update'.DIRECTORY_SEPARATOR.'versions.txt';
+        if (is_file($path)){
+            $localVersions = file_get_contents($path);
+        }
+
         $this->assign('countnum',$countNum);
+        $this->assign('systemV',$localVersions);
 
         return $this->fetch();
     }
