@@ -6,8 +6,8 @@
     RewriteCond %{REQUEST_FILENAME} !-f
 
     #本地phpstudy环境，使用下方规则
-    #RewriteRule ^(.*)$ index.php [L,E=PATH_INFO:$1]
+    RewriteRule ^(.*)$ index.php [L,E=PATH_INFO:$1]
 
     #其它主机使用下方规则
-    RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
+    #RewriteRule ^(.*)$ index.php/$1 [QSA,PT,L]
 </IfModule>
