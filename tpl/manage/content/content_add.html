@@ -60,7 +60,7 @@
                 <tr>
                     <td>推送属性</td>
                     <td>
-                        {volist name=":model('ContentFlag')->all()" id='vo'}
+                        {volist name=":model('CmsContentFlag')->all()" id='vo'}
                         <input type="checkbox" name="flag[]" title="{$vo.name}" value="{$vo.id}" lay-skin="primary">
                         {/volist}
                     </td>
@@ -132,7 +132,7 @@
                     <td>附加字段</td>
                     <td>值</td>
                 </tr>
-                {volist name=":model('ModelField')->where('model_id',$column.model_id)->order('order')->select()" id="vo"}
+                {volist name=":model('CmsModelField')->where('model_id',$column.model_id)->order('order')->select()" id="vo"}
                 {switch $vo.field_type_id}
                 {case 1}
                 <!--单行文本-->

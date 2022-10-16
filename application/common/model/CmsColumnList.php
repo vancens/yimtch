@@ -276,7 +276,7 @@ class CmsColumnList extends Model
 
                 //排序字段
                 if ($raworder == false){
-                    return (new ContentList)
+                    return (new CmsContentList)
                         ->alias('a')
                         ->leftJoin($db_name.' b','a.id = b.aid')
                         ->field('a.*'.$addfield_str)
@@ -285,7 +285,7 @@ class CmsColumnList extends Model
                         ->paginate($pagesize);
                 }
 
-                return (new ContentList)
+                return (new CmsContentList)
                     ->alias('a')
                     ->leftJoin($db_name.' b','a.id = b.aid')
                     ->field('a.*'.$addfield_str)
@@ -619,7 +619,7 @@ class CmsColumnList extends Model
     public function getDbNameWithSign($sign){
         $model_id = self::where('sign',$sign)->value('model_id');
         $db_name = CmsModelList::where('id',$model_id)->value('db_name');
-        return "content_with_".$db_name;
+        return "cms_content_with_".$db_name;
     }
 
     /**
