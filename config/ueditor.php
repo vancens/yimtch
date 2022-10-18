@@ -11,7 +11,7 @@
 
 return [
     /* 虚拟主机模式，部署在虚拟主机的环境中，需要开启此参数；否则会出现把上传的图片放到网站根目录内，而不是public文件夹内 */
-    'is_virtual_mode'           => true,
+    'is_virtual_mode'           => false,
     /* 上传图片配置项 */
     "imageActionName" => "uploadimage", /* 执行上传图片的action名称 */
     "imageFieldName" => "upfile", /* 提交的图片表单名称 */
