@@ -39,7 +39,7 @@ class Base extends Controller
         $module = $this->request->module();
         $controller = $this->request->controller();
         $action = $this->request->action();
-        $current_node = "{$module}/{$controller}/$action";
+        $current_node = "{$module}/{$controller}/{$action}";
         if ($controller != 'Index' && $controller != 'Upload'){
             //用户组ID
             $type_id = $this->_GLOBAL_ADMIN['type'];
