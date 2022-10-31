@@ -253,7 +253,7 @@ function screen_active($type,$value){
  * @param string $data
  * @return \think\response\Json
  */
-function ret_api($code,$msg='',$data=''){
+function ret_api($code,$msg='',$data=[]){
     return json([
         'code'=>$code,
         'msg'=>$msg,

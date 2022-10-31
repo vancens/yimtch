@@ -15,6 +15,7 @@ use app\common\model\FrameAdminerAuthAccessType;
 use app\common\model\SystemRules;
 use think\Controller;
 use think\Db;
+use think\facade\Config;
 use think\facade\Session;
 
 class Base extends Controller
@@ -30,7 +31,7 @@ class Base extends Controller
     protected function initialize(){
         //登录状态判断
         if(!Session::has('adminer_infos') ){
-            $this->error('请先登录','Login/in');
+            $this->error('请先登录','manage/Login/in');
         }
         $this->_GLOBAL_ADMIN = Session::get('adminer_infos');
         $this->assign('GLOBAL_ADMIN',$this->_GLOBAL_ADMIN);
@@ -58,8 +59,8 @@ class Base extends Controller
     /**
      * @title 根据主键ID删除数据
      * @author vancens's a.qiang
-     * @time 2020/11/21 20:25
-     * @return int|\think\response\Json
+     * @time 2022/10/30 18:25
+     * @return \think\response\Json
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
@@ -71,6 +72,38 @@ class Base extends Controller
         }else{
             return ajaxReturnError('请求参数错误');
         }
+    }
+
+    /**
+     * @title http post请求
+     * @author vancens's a.qiang
+     * @time 2022/10/30 23:55
+     * @param $url
+     * @param array $query
+     * @return mixed|\think\response\Json
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    protected function httpPost($url,$query=[]){
+
+        $config = [];
+        // 请求接口域名
+        $config['base_uri'] = Config::get('diy.http_domain');
+        // 请求token
+        if (empty($query['token'])){
+            $query['token'] = Config::get('diy.http_token');
+        }
+        $client = new \GuzzleHttp\Client($config);
+        $data = [];
+
+        try {
+            $response = $client->request('POST', $url,['query'=>$query]);
+            $data = json_decode($response->getBody(),true);
+        }catch (\GuzzleHttp\Exception\ClientException $e){
+            $data = ret_api(0,'catch请求错误');
+        }
+        return $data;
+
+
     }
 
 }

@@ -40,11 +40,11 @@ class Upload extends Base
             $file = $this->request->file('file');
             $info = $file
                 ->validate(['size'=>$data['file_image_size']*1024,'ext'=>$data['file_image_ext']])
-                ->move('../public/static/uploads/images');
+                ->move('../public/upload/images');
             if($info){
                 return json([
                     'code' => 1,
-                    'msg' => str_replace("\\","/",'/static/uploads/images/'.$info->getSaveName()),
+                    'msg' => str_replace("\\","/",'/upload/images/'.$info->getSaveName()),
                 ]);
             }else{
                 return json([
@@ -69,11 +69,11 @@ class Upload extends Base
             $file = $this->request->file('file');
             $info = $file
                 ->validate(['size'=>$data['file_image_size']*1024,'ext'=>$data['file_image_ext']])
-                ->move('../public/static/uploads/images');
+                ->move('../public/upload/images');
 
             if($info){
                 //原图地址|绝对定位
-                $pic_address = str_replace("\\","/",'/static/uploads/images/'.$info->getSaveName());
+                $pic_address = str_replace("\\","/",'/upload/images/'.$info->getSaveName());
                 //原图地址|相对定位
                 $pic_address_x = '.'.$pic_address;
                 //获取图片的日期路径
@@ -81,11 +81,11 @@ class Upload extends Base
                 //获取图片名称
                 $pic_name = $info->getFilename();
                 //缩略图保存地址与名称|绝对定位
-                $thumb_root = "/static/uploads/thumbnail/{$pic_date}/{$pic_name}";
+                $thumb_root = "/upload/thumbnail/{$pic_date}/{$pic_name}";
                 //缩略图保存地址与名称|相对定位
                 $thumb_root_x = ".{$thumb_root}";
                 //缩略图保存路径
-                $thumb_address = "./static/uploads/thumbnail/{$pic_date}";
+                $thumb_address = "./upload/thumbnail/{$pic_date}";
                 //判断缩略图保存的路径是否存在
                 if (!is_dir($thumb_address)){
                     mkdir($thumb_address);
@@ -122,11 +122,11 @@ class Upload extends Base
             $file = $this->request->file('file');
             $info = $file
                 ->validate(['size'=>$data['file_video_size']*1024,'ext'=>$data['file_video_ext']])
-                ->move('../public/static/uploads/video');
+                ->move('../public/upload/video');
             if($info){
                 return json([
                     'code' => 1,
-                    'msg' => str_replace("\\","/",'/static/uploads/video/'.$info->getSaveName()),
+                    'msg' => str_replace("\\","/",'/upload/video/'.$info->getSaveName()),
                 ]);
             }else{
                 return json([
@@ -151,11 +151,11 @@ class Upload extends Base
             $file = $this->request->file('file');
             $info = $file
                 ->validate(['size'=>$data['file_size']*1024,'ext'=>$data['file_ext']])
-                ->move('../public/static/uploads/file');
+                ->move('../public/upload/file');
             if($info){
                 return json([
                     'code' => 1,
-                    'msg' => str_replace("\\","/",'/static/uploads/file/'.$info->getSaveName()),
+                    'msg' => str_replace("\\","/",'/upload/file/'.$info->getSaveName()),
                 ]);
             }else{
                 return json([

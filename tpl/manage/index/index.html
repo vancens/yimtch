@@ -23,7 +23,7 @@
                 <a href="javascript:;" target="iframe">
                     <i class="layui-icon {$vo.icon}"></i> {$vo.name}
                 </a>
-                <dl class="layui-nav-child" {if $i==1}style='display: block'{/if}>
+                <dl class="layui-nav-child">
                 {foreach $vo.with_auth as $value}
                 {if $value.is_nav == 1}
                 <dd>

@@ -147,9 +147,9 @@ class Admin extends Base
             Db::startTrans();
             try {
                 //写入数据|adminer_type
-                Db::name('adminer_type')->strict(false)->update($par);
+                Db::name('frame_adminer_type')->strict(false)->update($par);
                 //删除
-                Db::name('adminer_auth_access_type')->where('type_id',$par['id'])->delete();
+                Db::name('frame_adminer_auth_access_type')->where('type_id',$par['id'])->delete();
 
                 if (isset($par['auth_id'])){
                     $access = [];
@@ -157,7 +157,7 @@ class Admin extends Base
                         array_push($access,['auth_id'=>$value,'type_id'=>$par['id']]);
                     }
                     //写入数据|adminer_auth_access_type
-                    Db::name('adminer_auth_access_type')->insertAll($access);
+                    Db::name('frame_adminer_auth_access_type')->insertAll($access);
                 }
                 Db::commit();
                 return ajaxReturnSuccess('修改成功');

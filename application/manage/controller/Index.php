@@ -73,6 +73,17 @@ class Index extends Base
             $localVersions = file_get_contents($path);
         }
 
+        // 域名授权信息
+        $domain = $this->request->host();
+        $ip = $this->request->ip();
+
+        $query = [
+            'domain'    => $domain,
+            'ip'        => $ip
+        ];
+        $domainQuery = $this->httpPost('/api/domainQuery',$query);
+        // dump($domainQuery);
+        $this->assign('domain',$domainQuery);
         $this->assign('countnum',$countNum);
         $this->assign('systemV',$localVersions);
 

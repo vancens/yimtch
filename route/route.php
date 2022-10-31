@@ -9,20 +9,15 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
+// 前台首页
 Route::rule('/','index/Index/index');
 
-//内容页
-Route::rule('view/<cid>','index/Index/view');
-//搜索页
-Route::rule('search/<q>','index/Index/search');
-//百度UE编辑器
-Route::rule('ueditor/index','\vancens\ueditor\Ueditor@index','GET|POST');
+// 版本历史
+Route::rule('api/versionHistory','api/Version/versionHistory');
 
-
-//栏目页
-Route::rule('h<sign>/sc/<screen>','index/index/lists')->pattern(['screen' => '[\w\*\%]+']);
-Route::rule('h<sign>/<page>','index/index/lists')->pattern(['page' => '\d+']);
-Route::rule('h<sign>','index/index/lists');
-
+// 授权查询
+Route::rule('api/domainQuery','api/Version/domainQuery');
+// 在线更新
+Route::rule('api/getUpgrade','api/Version/getUpgrade');
 
 return [];

@@ -409,11 +409,16 @@ return implode(', ', $result);
 </div>
 <?php } ?>
 
-<div class="copyright">
-    <a title="">VaCMS</a>
+<div class="copyright" style="font-size: 12px;">
+
+
+    <span>Yimtch</span>
+    <span><?php echo config('diy.system_v'); ?></span>
+    <span>&</span>
+    <span>Thinkphp</span>
     <span>V<?php echo \think\facade\App::version(); ?></span>
-    <span></span>
 </div>
+
 <?php if(\think\facade\App::isDebug()) { ?>
 <script>
     var LINE = <?php echo $line; ?>;

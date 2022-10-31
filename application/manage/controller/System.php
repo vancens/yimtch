@@ -12,6 +12,8 @@ namespace app\manage\controller;
 
 use app\common\controller\Base;
 use app\common\model\CmsColumnList;
+use think\Exception;
+use think\facade\Config;
 use think\facade\Env;
 
 class System extends Base
@@ -92,10 +94,12 @@ class System extends Base
     /**
      * @title 系统更新
      * @author vancens's a.qiang
-     * @time 2021/9/4 17:14
-     * @return mixed
+     * @time 2022/10/30 18:27
+     * @return mixed|\think\response\Json
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function systemUpdate(){
+
         $path = Env::get('root_path').'update'.DIRECTORY_SEPARATOR.'versions.txt';
         if (is_file($path)){
             $localVersions = file_get_contents($path);
@@ -103,28 +107,38 @@ class System extends Base
             $localVersions = '1.0.0';
         }
 
-        //客户端异步请求
-
+        // 客户端异步请求
         if ($this->request->isAjax()){
+
             if (!$this->request->has('type')){
                 return ajaxReturnError('请求参数错误');
             }
             $type = $this->request->param('type');
-            $host = "http://cloud.yimtch.com/api/Index/getUpgrade";
+            // 请求域名
+            $requestDomain = Config::get('diy.http_domain');
 
             switch ($type){
+
                 //远程获取cms系统版本信息
                 case 'check_versions':
-                    $ret = file_get_contents($host."?versions=".$localVersions);
-                    return json($ret);
+                    return $this->httpPost('/api/getUpgrade',['versions'=>$localVersions]);
                     break;
+
                 //远程下载更新包
                 case 'down_load':
                     $zip = $this->request->param('zip');
                     $name = $this->request->param('name');
-                    //开始下载
-                    $zip_url = "http://cms.yimtch.com".$zip;
-                    //return json($zip_url);
+                    // 文件远程下载地址
+                    $zip_url = $requestDomain.$zip;
+                    // 检测远程文件状态
+                    $check_zip_state = get_headers($zip_url);
+
+
+                    if (strpos($check_zip_state[0],'200') === FALSE){
+                        return ajaxReturnError('远程升级包不存在,请联系管理员');
+                    }
+
+                    // 本地保存路径
                     $save_path = Env::get('root_path').'update'.DIRECTORY_SEPARATOR.'download';
 
                     if (!is_dir($save_path)){
@@ -133,31 +147,43 @@ class System extends Base
                     if (!is_dir($save_path)){
                         return ajaxReturnError('创建下载目录失败,请检查目录权限');
                     }
+                    // 升级包本地文件路径（包含文件名称）
                     $save_full_path = $save_path.DIRECTORY_SEPARATOR.$name.'.zip';
 
-                    $copy_ret = copy($zip_url,$save_full_path);
-                    if (!$copy_ret){
+
+                    // 开始下载
+                    try {
+                        copy($zip_url,$save_full_path);
+                    }catch (\Exception $e){
                         return ajaxReturnError('升级文件下载失败,请联系管理员');
                     }
+
 
                     if (!is_file($save_full_path)){
                         return ajaxReturnError('检测不到升级文件包,请联系管理员');
                     }
-                    //解压文件，替换服务器文件
+                    // 下载远程升级包（.zip）
                     $zipObj = new \ZipArchive();
                     if ($zipObj->open($save_full_path) !== TRUE){
                         return ajaxReturnError('打开压缩包失败,请联系管理员');
                     }
-                    $zipObj->extractTo(Env::get('root_path'));
+                    // 解压并覆盖本地文件
+                    if ($zipObj->extractTo(Env::get('root_path')) !== TRUE){
+                        return ajaxReturnError('解压文件失败,请联系管理员');
+                    }
+
                     $zipObj->close();
-                    return ajaxReturnSuccess('升级成功,请刷新页面');
-                    //return json($copy_ret);
+                    return ajaxReturnSuccess('升级成功,请刷新页面（CTRL+F5）');
                     break;
             }
 
-            return ajaxReturnError('ajax参数错误');
+            return ajaxReturnError('请求参数错误');
         }
-        //dump($localVersions);
+
+
+        // 获取版本更新记录数据
+        $data = $this->httpPost('/api/versionHistory');
+        $this->assign('data',$data);
         $this->assign('local_versions',$localVersions);
         return $this->fetch();
     }

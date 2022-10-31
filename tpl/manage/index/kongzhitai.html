@@ -110,21 +110,37 @@
                             <col>
                         </colgroup>
                         <tbody>
-                        <tr>
-                            <td>域名</td>
-                            <td>{$serverInfo.HTTP_HOST}</td>
-                        </tr>
+                        <!--<tr>-->
+                        <!--    <td>域名</td>-->
+                        <!--    <td>{$serverInfo.HTTP_HOST}</td>-->
+                        <!--</tr>-->
                         <tr>
                             <td>授权状态</td>
-                            <td><i class="layui-icon layui-icon-ok-circle"></i> </td>
+                            <td>
+                                {if empty($domain.data)}
+                                <span class="layui-badge layui-bg-black">{$domain.msg}</span>
+                                {else}
+                                <span class="layui-badge layui-bg-blue">{$domain.msg}</span>
+                                {/if}
+                            </td>
                         </tr>
                         <tr>
                             <td>有效期</td>
-                            <td>/</td>
+                            <td>
+                                {if empty($domain.data)}
+                                /
+                                {else}
+                                {$domain.data.end_time|date="Y-m-d"}
+                                {/if}
+                            </td>
                         </tr>
                         <tr>
                             <td>系统版本</td>
                             <td>{$systemV}</td>
+                        </tr>
+                        <tr>
+                            <td>云通信</td>
+                            <td><i class="layui-icon layui-icon-ok-circle"></i></td>
                         </tr>
                         </tbody>
                     </table>
@@ -201,10 +217,7 @@
                             <td>php</td>
                             <td>{$Think.PHP_VERSION}</td>
                         </tr>
-                        <tr>
-                            <td>云通信</td>
-                            <td><i class="layui-icon layui-icon-ok-circle"></i></td>
-                        </tr>
+
 
                         </tbody>
                     </table>
