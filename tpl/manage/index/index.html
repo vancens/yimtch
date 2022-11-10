@@ -4,14 +4,16 @@
     <title>{vacms:config name='site_name'/}后台管理</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="/skin/addons/layui/layui_256/css/layui.css">
-    <link rel="stylesheet" href="/skin/manage/css/main.css">
+    {include file="public/source_head"}
 </head>
 <body id="iframe">
 <div class="index-main">
     <!--左侧-->
     <div class="left-nav">
-        <div class="layui-logo"><span class="layui-badge-rim">{vacms:config name='site_name'/}.后台管理</span></div>
+        <div class="layui-logo">
+            <span class="layui-badge-rim">{vacms:config name='site_name'/}.后台管理</span>
+        </div>
+
         <ul class="layui-nav layui-nav-tree" lay-filter="left_nav" lay-shrink="all">
             <li class="layui-nav-item layui-this">
                 <a href="{:url('Index/kongzhitai')}" target="iframe">
@@ -38,10 +40,21 @@
             {/volist}
         </ul>
     </div>
+
     <!--右侧-->
     <div class="right-main">
         <!--头部-->
         <div class="top-nav">
+            <ul class="layui-nav layui-layout-left">
+
+                <!--<li class="layui-nav-item" lay-unselect>-->
+                <!--    <a>-->
+                <!--        <i class="layui-icon layui-icon-release"></i> 内容管理-->
+                <!--    </a>-->
+                <!--</li>-->
+
+            </ul>
+
             <ul class="layui-nav layui-layout-right">
 
                 <li class="layui-nav-item">

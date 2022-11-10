@@ -1,50 +1,51 @@
-<script src="/skin/addons/layui/layui_256/layui.all.js"></script>
-    <script src="/skin/manage/js/public.js"></script>
-    <script>
-        let element     = layui.element;
-        let form        = layui.form;
-        let $           = layui.$;
-        let layer       = layui.layer;
-        let upload      = layui.upload;
-        let table       = layui.table;
-        let laydate     = layui.laydate;
-        let tree = layui.tree;
-        //配置layer
-        layer.config({
-            anim: 0, //默认动画风格
-            //skin: 'layui-layer-molv' //默认皮肤
-        });
-        //配置form
-        form.verify({
-            en_and_num: function(value, item){
-                let reg = /^[0-9a-z]+$/
-                if (!reg.test(value)){
-                    return "该字段只能由字母和数字组成"
-                }
-            },
-            otherReq: function(value,item){
+<script src="/skin/addons/layui/2_7_6/layui.js"></script>
+<script src="/skin/manage/js/public.js"></script>
 
-                let verifyName   = $(item).attr('name')
-                let verifyType   = $(item).attr('type')
-                //获取当前所在的form元素，如果存在的话
-                let formElem     = $(item).parents('.layui-form')
-                //获取需要校验的元素
-                let verifyElem   = formElem.find('input[name='+verifyName+']')
-                //是否命中校验
-                let isTrue       = verifyElem.is(':checked')
-                //焦点元素
-                let focusElem    = verifyElem.next().find('i.layui-icon');
-
-                if(!isTrue || !value){
-                    //定位焦点
-                    focusElem.css(verifyType=='radio'?{"color":"#FF5722"}:{"border-color":"#FF5722"});
-                    //对非输入框设置焦点
-                    focusElem.first().attr("tabIndex","1").css("outline","0").blur(function() {
-                        focusElem.css(verifyType=='radio'?{"color":""}:{"border-color":""});
-                    }).focus();
-
-                    return '必填项不能为空';
-                }
+<script>
+    let element     = layui.element;
+    let form        = layui.form;
+    let $           = layui.$;
+    let layer       = layui.layer;
+    let upload      = layui.upload;
+    let table       = layui.table;
+    let laydate     = layui.laydate;
+    let tree = layui.tree;
+    //配置layer
+    layer.config({
+        anim: 0, //默认动画风格
+        //skin: 'layui-layer-molv' //默认皮肤
+    });
+    //配置form
+    form.verify({
+        en_and_num: function(value, item){
+            let reg = /^[0-9a-z]+$/
+            if (!reg.test(value)){
+                return "该字段只能由字母和数字组成"
             }
-        })
-    </script>
+        },
+        otherReq: function(value,item){
+
+            let verifyName   = $(item).attr('name')
+            let verifyType   = $(item).attr('type')
+            //获取当前所在的form元素，如果存在的话
+            let formElem     = $(item).parents('.layui-form')
+            //获取需要校验的元素
+            let verifyElem   = formElem.find('input[name='+verifyName+']')
+            //是否命中校验
+            let isTrue       = verifyElem.is(':checked')
+            //焦点元素
+            let focusElem    = verifyElem.next().find('i.layui-icon');
+
+            if(!isTrue || !value){
+                //定位焦点
+                focusElem.css(verifyType=='radio'?{"color":"#FF5722"}:{"border-color":"#FF5722"});
+                //对非输入框设置焦点
+                focusElem.first().attr("tabIndex","1").css("outline","0").blur(function() {
+                    focusElem.css(verifyType=='radio'?{"color":""}:{"border-color":""});
+                }).focus();
+
+                return '必填项不能为空';
+            }
+        }
+    })
+</script>
